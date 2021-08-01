@@ -1,0 +1,45 @@
+.navbar{
+    background: var(--secondary-color);
+    height: 3.0rem;
+    margin: 0px 20px;
+    border-radius: 999px;
+    display: flex;
+    position: relative;
+    margin-top: 10px;
+}
+
+.searchbar{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.searchbar > input{
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: none;
+    outline-style: none;
+    width: 25vw;
+}
+
+.profile_section{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 50%;
+    right: 1%;
+    transform: translateY(-50%);
+}
+.profile_section > img{
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50%;
+}
+.profile_section > div >label > img{
+    height: 2.5rem;
+    width: 2.5rem;
+}
+.profile_section > div > input{
+    display: none;
+}
