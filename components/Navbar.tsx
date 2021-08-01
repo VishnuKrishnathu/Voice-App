@@ -26,11 +26,11 @@ export default function Navbar(props:any) {
                         />
                         <div>
                             <label htmlFor="dropdown_button">
-                            {
-                                profileDropDown
-                                ? <img src="https://s2.svgbox.net/materialui.svg?ic=arrow_drop_up&color=415265" />
-                                : <img src="https://s2.svgbox.net/materialui.svg?ic=arrow_drop_down&color=415265" />
-                            }
+                                <img src="https://s2.svgbox.net/materialui.svg?ic=arrow_drop_up&color=415265" style={
+                                    profileDropDown ? {transform: "rotate(0deg)"} : {
+                                        transform: "rotate(180deg)"
+                                    }
+                                }/>
                             </label>
                             <input onChange={async(e)=> {
                                 await setProfileDropDown(e.target.checked);

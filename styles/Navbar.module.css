@@ -37,6 +37,7 @@
     border-radius: 50%;
 }
 .profile_section > div >label > img{
+    transition: 0.2s;
     height: 2.5rem;
     width: 2.5rem;
 }
