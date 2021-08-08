@@ -1,4 +1,9 @@
+const path = require("path");
+
 module.exports = {
   reactStrictMode: true,
-  // basePath: '/home/vishnu/Documents/voice_app/frontend'
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  // Important: return the modified config
+    return config
+  }
 }

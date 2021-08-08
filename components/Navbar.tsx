@@ -2,7 +2,7 @@ import React, {createContext, useState} from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
 
-export const NavbarDisplay = createContext({});
+export const NavbarDisplay = createContext<Function>(()=> {});
 
 export default function Navbar(props:any) {
     const [navbardisplay, setNavbarDisplay] = useState<boolean>(true);
