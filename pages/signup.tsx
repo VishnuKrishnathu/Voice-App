@@ -1,76 +1,77 @@
 import React, {useContext, useState } from 'react';
-import { NavbarDisplay } from '../components/Navbar';
+import { navbarDisplay } from '../components/Navbar';
+import AuthContext, { AuthFunction } from "../Context/AuthContext";
 import { SidebarDisplay } from '../components/Sidebar';
 import styles from "../styles/Login.module.css";
+import { Form, Alert, Button } from 'react-bootstrap';
 import firebase from 'firebase';
 
 export default function signup() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [alertMessage, setAlertMessage] = useState<string>("");
+    const [loadingState, setLoadingState] = useState<boolean>(false);
 
     // Hide navbar and status bar👇 
-    const updateNavState = useContext(NavbarDisplay);
+    const updateNavState = navbarDisplay();
     const updateSideBar = useContext(SidebarDisplay);
     updateNavState(false);
     updateSideBar(false);
+    const {signupController} = AuthFunction();
 
     // Authentication method👇 
-    const signupUser = () => {
-        if (email === "" && password === "") return;
-        else {
-            let password_1 = (document.querySelector("#password") as HTMLInputElement).value;
-            let password_2 = (document.querySelector("#confirm_password") as HTMLInputElement).value;
-            let email_id = (document.querySelector("#emailID") as HTMLInputElement);
-            if (password_1 !== password_2) return;
-            if (!email_id.validity.valid) return;
-        }
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            console.log(userCredential);
-            let user = userCredential.user;
-        })
-        .catch((error) => {
-            console.log(error);
-            setAlertMessage(error?.message);
-        });
+    type Inputfunc = {
+        preventDefault : Function
+    }
+    const signupUser = async (e : Inputfunc) => {
+        e.preventDefault();
+        setLoadingState(true);
+        setAlertMessage("");
+        let password_1 = (document.querySelector("#password") as HTMLInputElement).value;
+        let password_2 = (document.querySelector("#confirm_password") as HTMLInputElement).value;
+        if (password_1 !== password_2) {
+            setAlertMessage("Password mismatch");
+            return;
+        };
+        let message = signupController ?await signupController(email, password) : "";
+        setAlertMessage(message);
+        setLoadingState(false);
     }
 
     return (
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
-            <div className={`py-2 ${styles.input_box_style}`}>
-                <label htmlFor="emailID" >Email Id: </label>
-                <input 
-                    type="email" 
-                    id="emailID" 
-                    name="emailID" 
-                    className={`${styles.input_bar_style} px-2`} 
-                    onChange= {(e)=> {
-                        setEmail(e.target.value);
-                    }}
-                />
-            </div>
-            <div className={`py-2 ${styles.input_box_style}`}>
-                <label htmlFor="password" >Password: </label>
-                <input type="password" id="password" name="password" className={`${styles.input_bar_style} px-2`} />
-            </div>
-            <div className={`py-2 ${styles.input_box_style}`}>
-                <label htmlFor="confirm_password">Confirm Password: </label>
-                <input 
-                    type="password" 
-                    id="confirm_password" 
-                    name="confirm_password" 
-                    onChange= {(e)=> {
-                        setPassword(e.target.value);
-                    }}
-                    className={`${styles.input_bar_style} px-2`}
-                />
-            </div>
-            <button 
-                className={`py-1 px-2 mt-2 ${styles.button_style}`}
-                onClick={signupUser}
-            >SUBMIT</button>
-            <div style={{color: "red"}}>{alertMessage}</div>
+            {
+                alertMessage !== "" && 
+                <Alert variant="danger">{alertMessage}</Alert>
+            }
+            <Form onSubmit={signupUser}>
+                <Form.Group className="py-1">
+                    <Form.Label>Email Id</Form.Label>
+                    <Form.Control 
+                        type="email" 
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Form.Group className="py-1">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control 
+                        type="password" 
+                        required
+                        id="password"
+                    />
+                </Form.Group>
+                <Form.Group className="py-1">
+                    <Form.Label>Confirm password</Form.Label>
+                    <Form.Control 
+                        type="password" 
+                        id="confirm_password"
+                        required
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                </Form.Group>
+                <Button type="submit" className="mt-2" disabled={loadingState}>SIGN UP</Button>
+            </Form>
         </div>
     )
 }

@@ -1,10 +1,19 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useState, useContext} from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
 
-export const NavbarDisplay = createContext<Function>(()=> {});
+type Props ={
+    title? : string,
+    children : JSX.Element
+}
 
-export default function Navbar(props:any) {
+const NavbarDisplay = createContext<Function>(()=> {});
+
+export const navbarDisplay = ()=> {
+    return useContext(NavbarDisplay);
+}
+
+export default function Navbar(props: Props) {
     const [navbardisplay, setNavbarDisplay] = useState<boolean>(true);
     const [profileDropDown, setProfileDropDown] = useState<boolean>(false);
 
