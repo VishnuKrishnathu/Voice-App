@@ -51,6 +51,7 @@ export default function login() {
                     <Form.Label>Email Id</Form.Label>
                     <Form.Control
                         type="email"
+                        style= {{width: "max(250px, 25vw)"}}
                         required
                         onChange = {(e)=> {
                             setEmail(e.target.value);
@@ -61,7 +62,8 @@ export default function login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
                         type="password" 
-                        required 
+                        required
+                        style= {{width: "max(250px, 25vw)"}}
                         onChange= {e => {
                             setPassword(e.target.value);
                         }}

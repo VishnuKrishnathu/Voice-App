@@ -31,6 +31,7 @@
     right: 1%;
     transform: translateY(-50%);
 }
+
 .profile_section > img{
     height: 2.5rem;
     width: 2.5rem;
@@ -43,4 +44,13 @@
 }
 .profile_section > div > input{
     display: none;
+}
+
+.dropdown_options {
+    position: absolute;
+    top: 3rem;
+    left: 0px;
+    overflow: hidden;
+    transition: 0.2s;
+    height: auto;
 }

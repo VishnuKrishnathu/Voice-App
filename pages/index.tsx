@@ -1,14 +1,16 @@
-import React, {useContext } from 'react';
+import React, {useContext, useEffect } from 'react';
 import Head from 'next/head'
 import { navbarDisplay } from '../components/Navbar';
 import { SidebarDisplay } from '../components/Sidebar';
 
 export default function Home() {
+
   // Show navbar and status bar👇
   const updateNavState = navbarDisplay();
   const updateSideBar = useContext(SidebarDisplay);
   updateNavState(true);
   updateSideBar(true);
+
   return (
     <>
     <Head>

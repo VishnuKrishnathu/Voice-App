@@ -1,6 +1,8 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useState, useContext } from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
+import { ListGroup, Button } from "react-bootstrap";
+import { AuthFunction } from "../Context/AuthContext";
 
 type Props ={
     title? : string,
@@ -16,6 +18,8 @@ export const navbarDisplay = ()=> {
 export default function Navbar(props: Props) {
     const [navbardisplay, setNavbarDisplay] = useState<boolean>(true);
     const [profileDropDown, setProfileDropDown] = useState<boolean>(false);
+
+    const { logOutFunction } = AuthFunction();
 
     function updateNavState(val: boolean){
         setNavbarDisplay(val);
@@ -41,9 +45,28 @@ export default function Navbar(props: Props) {
                                     }
                                 }/>
                             </label>
-                            <input onChange={async(e)=> {
-                                await setProfileDropDown(e.target.checked);
-                            }} type="checkbox" id="dropdown_button" name="dropdown_button"/>
+                            <input 
+                                onChange={async(e)=> {
+                                    await setProfileDropDown(e.target.checked);
+                                }} 
+                                type="checkbox" 
+                                id="dropdown_button" 
+                                name="dropdown_button" 
+                            />
+                            <ListGroup 
+                                className={styles.dropdown_options} 
+                                style ={!profileDropDown ? {
+                                    height: "0px"
+                                }: {}}
+                            >
+                                <ListGroup.Item>Profile</ListGroup.Item>
+                                <ListGroup.Item className="p-0">
+                                    <Button 
+                                        onClick={logOutFunction && logOutFunction()}
+                                        className="py-2 px-3"
+                                    >Logout</Button>
+                                </ListGroup.Item>
+                            </ListGroup>
                         </div>
                     </div>
                 </div>

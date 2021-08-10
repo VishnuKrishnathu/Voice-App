@@ -1,11 +1,9 @@
 import React, {useContext, useState } from 'react';
 import { navbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
-import AuthContext, { AuthFunction } from "../Context/AuthContext";
+import { AuthFunction } from "../Context/AuthContext";
 import { SidebarDisplay } from '../components/Sidebar';
-import styles from "../styles/Login.module.css";
 import { Form, Alert, Button } from 'react-bootstrap';
-import firebase from 'firebase';
 
 export default function signup() {
     const [email, setEmail] = useState<string>("");
@@ -20,7 +18,7 @@ export default function signup() {
     const updateSideBar = useContext(SidebarDisplay);
     updateNavState(false);
     updateSideBar(false);
-    const {signupController} = AuthFunction();
+    const {signupController, user} = AuthFunction();
 
     // Authentication method👇 
     type Inputfunc = {
@@ -43,6 +41,9 @@ export default function signup() {
     }
 
     return (
+        <>
+        {
+            !user.email ?
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
             {
                 alertMessage !== "" && 
@@ -53,6 +54,7 @@ export default function signup() {
                     <Form.Label>Email Id</Form.Label>
                     <Form.Control 
                         type="email" 
+                        style= {{width: "max(250px, 25vw)"}}
                         onChange={e => setEmail(e.target.value)}
                         required
                     />
@@ -61,6 +63,7 @@ export default function signup() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
                         type="password" 
+                        style= {{width: "max(250px, 25vw)"}}
                         required
                         id="password"
                     />
@@ -69,6 +72,7 @@ export default function signup() {
                     <Form.Label>Confirm password</Form.Label>
                     <Form.Control 
                         type="password" 
+                        style= {{width: "max(250px, 25vw)"}}
                         id="confirm_password"
                         required
                         onChange={e => setPassword(e.target.value)}
@@ -76,6 +80,8 @@ export default function signup() {
                 </Form.Group>
                 <Button type="submit" className="mt-2" disabled={loadingState}>SIGN UP</Button>
             </Form>
-        </div>
+        </div>: history.push("/")
+        }
+        </>
     )
 }

@@ -4,6 +4,7 @@ import app, {auth} from '../firebase';
 interface AuthInterface {
     signupController ?: Function,
     signinController ?: Function,
+    logOutFunction ?: Function,
     user ?: any
 }
 const AuthProvider = createContext<AuthInterface>({});
@@ -17,13 +18,13 @@ type Props = {
     children : JSX.Element
 }
 
-// Authentication method👇 
+// Authentication method👇
 export default function AuthContext(props: Props){
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [user, setUser] = useState<any>({});
 
-    // Sign up function👇 
+    // Sign up function👇
     const signupController = async (emailID: string, passwordConfirmed: string): Promise<String> => {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
         try {
@@ -36,6 +37,11 @@ export default function AuthContext(props: Props){
             return error?.message;
         }
     }
+
+    const logOutFunction = ()=> {
+        auth.signOut();
+    }
+
 
     // Login up function👇 
     const signinController = async(emailID: string, passwordConfirmed: string):Promise<string> => {
@@ -61,6 +67,7 @@ export default function AuthContext(props: Props){
     const value = {
         signupController,
         signinController,
+        logOutFunction,
         user
     }
     return (
