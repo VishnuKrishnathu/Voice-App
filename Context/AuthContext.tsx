@@ -3,6 +3,7 @@ import app, {auth} from '../firebase';
 
 interface AuthInterface {
     signupController ?: Function,
+    signinController ?: Function,
     user ?: any
 }
 const AuthProvider = createContext<AuthInterface>({});
@@ -22,17 +23,9 @@ export default function AuthContext(props: Props){
     const [password, setPassword] = useState<string>("");
     const [user, setUser] = useState<any>({});
 
+    // Sign up function👇 
     const signupController = async (emailID: string, passwordConfirmed: string): Promise<String> => {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
-        // await auth.createUserWithEmailAndPassword(emailID, passwordConfirmed)
-        // .then((userCredential) => {
-        //     console.log(userCredential);
-        // })
-        // .catch((error) => {
-        //     console.log(error);
-        //     return error?.message;
-        // });
-        // return "";
         try {
             let user_signed = await auth.createUserWithEmailAndPassword(emailID, passwordConfirmed)
             console.log(user_signed);
@@ -44,15 +37,30 @@ export default function AuthContext(props: Props){
         }
     }
 
+    // Login up function👇 
+    const signinController = async(emailID: string, passwordConfirmed: string):Promise<string> => {
+        if (emailID === "" || passwordConfirmed === "") return "";
+        try{
+            let user_signed = await auth.signInWithEmailAndPassword(emailID, passwordConfirmed);
+            return "";
+        }
+        catch(error){
+            return error.message;
+        }
+    }
+
+    useEffect(()=> console.log(user), [user]);
+
+    // Setting logged in user👇
     useEffect(()=> {
-        console.log(user);
-    }, [user])
-    useEffect(()=> {
-        auth.onAuthStateChanged(user => setUser(user));
+        let loggedUser = auth.onAuthStateChanged(user => setUser(user));
+
+        return loggedUser;
     }, [])
 
     const value = {
         signupController,
+        signinController,
         user
     }
     return (

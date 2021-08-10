@@ -1,5 +1,6 @@
 import React, {useContext, useState } from 'react';
 import { navbarDisplay } from '../components/Navbar';
+import { useRouter } from 'next/router';
 import AuthContext, { AuthFunction } from "../Context/AuthContext";
 import { SidebarDisplay } from '../components/Sidebar';
 import styles from "../styles/Login.module.css";
@@ -12,7 +13,9 @@ export default function signup() {
     const [alertMessage, setAlertMessage] = useState<string>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
 
-    // Hide navbar and status bar👇 
+    const history = useRouter();
+
+    // Hide navbar and status bar👇
     const updateNavState = navbarDisplay();
     const updateSideBar = useContext(SidebarDisplay);
     updateNavState(false);
@@ -33,8 +36,9 @@ export default function signup() {
             setAlertMessage("Password mismatch");
             return;
         };
-        let message = signupController ?await signupController(email, password) : "";
+        let message = signupController ?await signupController(email, password): "";
         setAlertMessage(message);
+        message === "" && history.push("/");
         setLoadingState(false);
     }
 

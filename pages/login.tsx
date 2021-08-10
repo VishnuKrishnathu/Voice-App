@@ -3,6 +3,7 @@ import { navbarDisplay } from '../components/Navbar';
 import { SidebarDisplay } from '../components/Sidebar';
 import { useRouter } from 'next/router';
 import GoogleLogin from 'react-google-login';
+import { AuthFunction } from '../Context/AuthContext';
 import { Form, Button, Alert } from "react-bootstrap";
 import firebase from 'firebase';
 
@@ -22,20 +23,17 @@ export default function login() {
     type Inputfunc = {
         preventDefault : Function
     }
+    const { signinController } = AuthFunction();
 
     const signUpHandler = async(e: Inputfunc) => {
         e.preventDefault();
 
         setAlertMessage("");
         setLoadingState(true);
-        await firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            history.push('/');
-        })
-        .catch((error) => {
-            setLoadingState(false);
-            setAlertMessage(error.message);
-        });
+        let message = signinController ? await signinController(email, password) : "";
+        setAlertMessage(message);
+        message == "" && history.push("/");
+        setLoadingState(false);
     }
 
     const responseGoogle = (response:any) => {
