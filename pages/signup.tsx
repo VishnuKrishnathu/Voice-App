@@ -1,4 +1,4 @@
-import React, {useContext, useState } from 'react';
+import React, {useContext, useState, useEffect } from 'react';
 import { navbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
@@ -20,6 +20,13 @@ export default function signup() {
     updateSideBar(false);
     const {signupController, user} = AuthFunction();
 
+
+    useEffect(()=> {
+        console.log(user);
+        // if (user !== null ) history.push('/');
+    }, [user])
+
+
     // Authentication method👇 
     type Inputfunc = {
         preventDefault : Function
@@ -36,14 +43,11 @@ export default function signup() {
         };
         let message = signupController ?await signupController(email, password): "";
         setAlertMessage(message);
-        message === "" && history.push("/");
+        // message === "" && history.push("/");
         setLoadingState(false);
     }
 
     return (
-        <>
-        {
-            !user.email ?
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
             {
                 alertMessage !== "" && 
@@ -54,7 +58,7 @@ export default function signup() {
                     <Form.Label>Email Id</Form.Label>
                     <Form.Control 
                         type="email" 
-                        style= {{width: "max(250px, 25vw)"}}
+                        style= {{width: "max(250px, 27vw)"}}
                         onChange={e => setEmail(e.target.value)}
                         required
                     />
@@ -63,7 +67,7 @@ export default function signup() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
                         type="password" 
-                        style= {{width: "max(250px, 25vw)"}}
+                        style= {{width: "max(250px, 27vw)"}}
                         required
                         id="password"
                     />
@@ -72,16 +76,15 @@ export default function signup() {
                     <Form.Label>Confirm password</Form.Label>
                     <Form.Control 
                         type="password" 
-                        style= {{width: "max(250px, 25vw)"}}
+                        style= {{width: "max(250px, 27vw)"}}
                         id="confirm_password"
                         required
                         onChange={e => setPassword(e.target.value)}
                     />
                 </Form.Group>
-                <Button type="submit" className="mt-2" disabled={loadingState}>SIGN UP</Button>
+                {!loadingState && <Button type="submit" className="mt-2">SIGN UP</Button>}
+                {loadingState && <Button type="submit" className="mt-2" disabled={true}>Please wait ....</Button>}
             </Form>
-        </div>: history.push("/")
-        }
-        </>
+        </div>
     )
 }

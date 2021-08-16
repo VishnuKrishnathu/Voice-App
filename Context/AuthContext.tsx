@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import app, {auth} from '../firebase';
+import Route from './Env';
+import { useRouter } from 'next/router';
+
 
 interface AuthInterface {
-    signupController ?: Function,
-    signinController ?: Function,
-    logOutFunction ?: Function,
+    refreshAccessToken ?: {() :void },
+    signupController ?: {(emailID: string, passwordConfirmed: string): Promise<any>},
+    signinController ?: {(emailID: string, passwordConfirmed: string): Promise<string>},
+    logOutFunction ?: {(): void},
     user ?: any
 }
 const AuthProvider = createContext<AuthInterface>({});
@@ -18,36 +21,82 @@ type Props = {
     children : JSX.Element
 }
 
+interface ISigninResponse {
+    error : string,
+    userCreated : boolean,
+    accessToken : string,
+    refreshToken : string
+}
+
 // Authentication method👇
 export default function AuthContext(props: Props){
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [user, setUser] = useState<any>({});
+    const [accessToken, setAccessToken] = useState<string>("");
+
+
+    const history = useRouter();
+
+    // Refreshing and setting token👇
+    async function refreshAccessToken (){
+        let response = await fetch(`${Route().BASE_URL}/refresh`).then(res => res.json())
+        .then((data: {
+            verified : boolean,
+            accessToken : string,
+            error ?: string
+        }) => {
+            if(!data.verified) {
+                history.push("/signup");
+                setAccessToken("");
+                return;
+            };
+            setAccessToken(data.accessToken);
+        });
+    }
 
     // Sign up function👇
-    const signupController = async (emailID: string, passwordConfirmed: string): Promise<String> => {
+    async function signupController (emailID: string, passwordConfirmed: string): Promise<any> {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
-        try {
-            let user_signed = await auth.createUserWithEmailAndPassword(emailID, passwordConfirmed)
-            console.log(user_signed);
+        const response = await fetch(`${Route().BASE_URL}/signin`, {
+            method: 'POST',
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                emailId: emailID,
+                password: passwordConfirmed
+            })
+        }).then( res => res.json())
+        .then((data : ISigninResponse)=> {
+            if(! data.userCreated) return data.error;
+            history.push('/');
+            setAccessToken(data.accessToken);
             return "";
-        }
-        catch(error){
-            console.log(error);
-            return error?.message;
-        }
-    }
+        })
+        .catch(err => err.message);
+        return response;
+    };
 
-    const logOutFunction = ()=> {
-        auth.signOut();
-    }
+    async function logOutFunction (){
+        console.log("logged");
+    };
 
 
     // Login up function👇 
-    const signinController = async(emailID: string, passwordConfirmed: string):Promise<string> => {
+    async function signinController (emailID: string, passwordConfirmed: string):Promise<string> {
         if (emailID === "" || passwordConfirmed === "") return "";
         try{
-            let user_signed = await auth.signInWithEmailAndPassword(emailID, passwordConfirmed);
+            let response = await fetch(`${Route().BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    emailID: emailID,
+                    password: passwordConfirmed
+                })
+            }).then(res => res.json())
+            .then((data : {(): void}) => console.log(data))
+            .catch(err => console.log(err));
             return "";
         }
         catch(error){
@@ -55,20 +104,17 @@ export default function AuthContext(props: Props){
         }
     }
 
-    useEffect(()=> console.log(user), [user]);
-
-    // Setting logged in user👇
-    useEffect(()=> {
-        let loggedUser = auth.onAuthStateChanged(user => setUser(user));
-
-        return loggedUser;
-    }, [])
+    // fetching access token if not found in the memory👇
+    useEffect(function () {
+        if(accessToken === "") refreshAccessToken();
+    }, [accessToken])
 
     const value = {
+        refreshAccessToken,
         signupController,
         signinController,
         logOutFunction,
-        user
+        accessToken
     }
     return (
         <>

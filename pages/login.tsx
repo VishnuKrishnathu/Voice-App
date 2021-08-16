@@ -32,7 +32,7 @@ export default function login() {
         setLoadingState(true);
         let message = signinController ? await signinController(email, password) : "";
         setAlertMessage(message);
-        message == "" && history.push("/");
+        // message == "" && history.push("/");
         setLoadingState(false);
     }
 

@@ -62,7 +62,7 @@ export default function Navbar(props: Props) {
                                 <ListGroup.Item>Profile</ListGroup.Item>
                                 <ListGroup.Item className="p-0">
                                     <Button 
-                                        onClick={logOutFunction && logOutFunction()}
+                                        onClick={logOutFunction}
                                         className="py-2 px-3"
                                     >Logout</Button>
                                 </ListGroup.Item>

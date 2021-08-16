@@ -2,6 +2,8 @@ import React, {useContext, useEffect } from 'react';
 import Head from 'next/head'
 import { navbarDisplay } from '../components/Navbar';
 import { SidebarDisplay } from '../components/Sidebar';
+import { AuthFunction } from "../Context/AuthContext";
+import { auth } from "../firebase";
 
 export default function Home() {
 
@@ -10,6 +12,7 @@ export default function Home() {
   const updateSideBar = useContext(SidebarDisplay);
   updateNavState(true);
   updateSideBar(true);
+
 
   return (
     <>
