@@ -1,5 +1,5 @@
 import React, {useContext, useState } from 'react';
-import { navbarDisplay } from '../components/Navbar';
+import { NavbarDisplay } from '../components/Navbar';
 import { SidebarDisplay } from '../components/Sidebar';
 import { useRouter } from 'next/router';
 import GoogleLogin from 'react-google-login';
@@ -7,15 +7,15 @@ import { AuthFunction } from '../Context/AuthContext';
 import { Form, Button, Alert } from "react-bootstrap";
 import firebase from 'firebase';
 
-export default function login() {
+export default function Login() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [alertMessage, setAlertMessage] = useState<string>("");
+    const [alertMessage, setAlertMessage] = useState<string | void>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
     const history = useRouter()
 
     // Hide navbar and status bar👇
-    const updateNavState = navbarDisplay();
+    const updateNavState = NavbarDisplay();
     const updateSideBar = useContext(SidebarDisplay);
     updateNavState(false);
     updateSideBar(false);
@@ -32,7 +32,7 @@ export default function login() {
         setLoadingState(true);
         let message = signinController ? await signinController(email, password) : "";
         setAlertMessage(message);
-        // message == "" && history.push("/");
+        message == "" && history.push("/");
         setLoadingState(false);
     }
 
@@ -44,7 +44,7 @@ export default function login() {
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
             {alertMessage !== "" && 
                 <Alert variant="danger">
-                    {alertMessage}
+                    {(typeof alertMessage === "string") ?alertMessage: null}
                 </Alert>}
             <Form onSubmit= {signUpHandler}>
                 <Form.Group className="my-1">

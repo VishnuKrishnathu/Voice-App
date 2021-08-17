@@ -9,10 +9,10 @@ type Props ={
     children : JSX.Element
 }
 
-const NavbarDisplay = createContext<Function>(()=> {});
+const Navbardisplay = createContext<Function>(()=> {});
 
-export const navbarDisplay = ()=> {
-    return useContext(NavbarDisplay);
+export const NavbarDisplay = ()=> {
+    return useContext(Navbardisplay);
 }
 
 export default function Navbar(props: Props) {
@@ -25,7 +25,7 @@ export default function Navbar(props: Props) {
         setNavbarDisplay(val);
     }
     return (
-        <NavbarDisplay.Provider value={updateNavState}>
+        <Navbardisplay.Provider value={updateNavState}>
             {navbardisplay ? <>
             <div style={{
                 position: "sticky"
@@ -73,6 +73,6 @@ export default function Navbar(props: Props) {
             </div>
             </> : null}
             {props.children}
-        </NavbarDisplay.Provider>
+        </Navbardisplay.Provider>
     )
 }

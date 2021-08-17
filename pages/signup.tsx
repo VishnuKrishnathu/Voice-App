@@ -1,30 +1,24 @@
 import React, {useContext, useState, useEffect } from 'react';
-import { navbarDisplay } from '../components/Navbar';
+import { NavbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
 import { SidebarDisplay } from '../components/Sidebar';
 import { Form, Alert, Button } from 'react-bootstrap';
 
-export default function signup() {
+export default function Signup() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [alertMessage, setAlertMessage] = useState<string>("");
+    const [alertMessage, setAlertMessage] = useState<string | void>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
 
     const history = useRouter();
 
     // Hide navbar and status bar👇
-    const updateNavState = navbarDisplay();
+    const updateNavState = NavbarDisplay();
     const updateSideBar = useContext(SidebarDisplay);
     updateNavState(false);
     updateSideBar(false);
-    const {signupController, user} = AuthFunction();
-
-
-    useEffect(()=> {
-        console.log(user);
-        // if (user !== null ) history.push('/');
-    }, [user])
+    const { signupController } = AuthFunction();
 
 
     // Authentication method👇 
@@ -51,7 +45,7 @@ export default function signup() {
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
             {
                 alertMessage !== "" && 
-                <Alert variant="danger">{alertMessage}</Alert>
+                <Alert variant="danger">{(typeof alertMessage === "string") ?alertMessage: null}</Alert>
             }
             <Form onSubmit={signupUser}>
                 <Form.Group className="py-1">
@@ -61,6 +55,7 @@ export default function signup() {
                         style= {{width: "max(250px, 27vw)"}}
                         onChange={e => setEmail(e.target.value)}
                         required
+                        autoComplete= ""
                     />
                 </Form.Group>
                 <Form.Group className="py-1">
@@ -70,6 +65,7 @@ export default function signup() {
                         style= {{width: "max(250px, 27vw)"}}
                         required
                         id="password"
+                        autoComplete = "new-password"
                     />
                 </Form.Group>
                 <Form.Group className="py-1">
@@ -80,6 +76,7 @@ export default function signup() {
                         id="confirm_password"
                         required
                         onChange={e => setPassword(e.target.value)}
+                        autoComplete = "new-password"
                     />
                 </Form.Group>
                 {!loadingState && <Button type="submit" className="mt-2">SIGN UP</Button>}

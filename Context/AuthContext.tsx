@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 
 interface AuthInterface {
     refreshAccessToken ?: {() :void },
-    signupController ?: {(emailID: string, passwordConfirmed: string): Promise<any>},
-    signinController ?: {(emailID: string, passwordConfirmed: string): Promise<string>},
+    signupController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
+    signinController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
     logOutFunction ?: {(): void},
     user ?: any
 }
@@ -44,6 +44,7 @@ export default function AuthContext(props: Props){
             error ?: string
         }) => {
             if(!data.verified) {
+                if(location.pathname === "/login") return;
                 history.push("/signup");
                 setAccessToken("");
                 return;
@@ -53,7 +54,7 @@ export default function AuthContext(props: Props){
     }
 
     // Sign up function👇
-    async function signupController (emailID: string, passwordConfirmed: string): Promise<any> {
+    async function signupController (emailID: string, passwordConfirmed: string): Promise<string | void> {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
         const response = await fetch(`${Route().BASE_URL}/signin`, {
             method: 'POST',
@@ -82,32 +83,35 @@ export default function AuthContext(props: Props){
 
 
     // Login up function👇 
-    async function signinController (emailID: string, passwordConfirmed: string):Promise<string> {
+    async function signinController (emailID: string, passwordConfirmed: string):Promise<string | void> {
         if (emailID === "" || passwordConfirmed === "") return "";
-        try{
-            let response = await fetch(`${Route().BASE_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body : JSON.stringify({
-                    emailID: emailID,
-                    password: passwordConfirmed
-                })
-            }).then(res => res.json())
-            .then((data : {(): void}) => console.log(data))
-            .catch(err => console.log(err));
+        let response = await fetch(`${Route().BASE_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({
+                emailId: emailID,
+                password: passwordConfirmed
+            })
+        }).then(res => res.json())
+        .then((data : {
+            loggedIn : boolean,
+            error : string,
+            accessToken ?: string
+        }) => {
+            if(!data.loggedIn) return data.error;
+            accessToken && setAccessToken(accessToken);
             return "";
-        }
-        catch(error){
-            return error.message;
-        }
+        })
+        .catch(err => console.log(err));
+        return response;
     }
 
     // fetching access token if not found in the memory👇
     useEffect(function () {
         if(accessToken === "") refreshAccessToken();
-    }, [accessToken])
+    }, [accessToken]);
 
     const value = {
         refreshAccessToken,
