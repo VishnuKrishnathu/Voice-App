@@ -1,18 +1,29 @@
 import React, { useContext, useEffect } from 'react';
 import Head from 'next/head'
 import { NavbarDisplay } from '../components/Navbar';
-import { SidebarDisplay } from '../components/Sidebar';
+import { SidebarContext } from '../components/Sidebar';
+import { io } from 'socket.io-client';
 import { AuthFunction } from "../Context/AuthContext";
-import { auth } from "../firebase";
+import Route from '../Context/Env';
 
 export default function Home() {
 
+  const { accessToken } = AuthFunction();
+
   // Show navbar and status bar👇
   const updateNavState = NavbarDisplay();
-  const updateSideBar = useContext(SidebarDisplay);
+  const updateSideBar = SidebarContext();
   updateNavState(true);
   updateSideBar(true);
 
+  useEffect(()=> {
+    const socket = io(`http://localhost:5050`, {
+      auth : {
+        token : accessToken
+      }
+    });
+    socket.emit('custom-event', "Hello World");
+  }, [accessToken]);
 
   return (
     <>

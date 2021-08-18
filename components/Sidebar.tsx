@@ -1,9 +1,18 @@
 import styles from '../styles/Sidebar.module.css';
-import { useState, createContext } from "react";
+import { useState, createContext, useContext } from "react";
 
-export const SidebarDisplay = createContext<Function>(()=> {});
+type Props = {
+    title? : string,
+    children : JSX.Element
+}
 
-export default function Sidebar(props: any) {
+const SidebarDisplay = createContext<Function>(function(){});
+
+export const SidebarContext = () => {
+    return useContext(SidebarDisplay);
+}
+
+export default function Sidebar(props: Props) {
     const [sideBarStatus, setSideBarStatus] = useState<boolean>(true);
     function updateSideBar(val: boolean) {
         setSideBarStatus(val);

@@ -2,8 +2,9 @@ import React, {useContext, useState, useEffect } from 'react';
 import { NavbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
-import { SidebarDisplay } from '../components/Sidebar';
+import { SidebarContext } from '../components/Sidebar';
 import { Form, Alert, Button } from 'react-bootstrap';
+
 
 export default function Signup() {
     const [email, setEmail] = useState<string>("");
@@ -15,9 +16,10 @@ export default function Signup() {
 
     // Hide navbar and status bar👇
     const updateNavState = NavbarDisplay();
-    const updateSideBar = useContext(SidebarDisplay);
+    const updateSideBar = SidebarContext();
     updateNavState(false);
     updateSideBar(false);
+
     const { signupController } = AuthFunction();
 
 
@@ -85,4 +87,13 @@ export default function Signup() {
             </Form>
         </div>
     )
+}
+
+export function getStaticProps (){
+    
+    return {
+        props : {
+            data : "Hello World"
+        }
+    }
 }

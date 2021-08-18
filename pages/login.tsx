@@ -1,28 +1,32 @@
 import React, {useContext, useState } from 'react';
 import { NavbarDisplay } from '../components/Navbar';
-import { SidebarDisplay } from '../components/Sidebar';
+import { SidebarContext} from '../components/Sidebar';
 import { useRouter } from 'next/router';
-import GoogleLogin from 'react-google-login';
+// import GoogleLogin from 'react-google-login';
 import { AuthFunction } from '../Context/AuthContext';
 import { Form, Button, Alert } from "react-bootstrap";
-import firebase from 'firebase';
 
-export default function Login() {
+export default function Login(props : {
+    navbar : boolean,
+    sidebar : boolean
+}) {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [alertMessage, setAlertMessage] = useState<string | void>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
-    const history = useRouter()
+    const history = useRouter();
 
-    // Hide navbar and status bar👇
-    const updateNavState = NavbarDisplay();
-    const updateSideBar = useContext(SidebarDisplay);
-    updateNavState(false);
-    updateSideBar(false);
-
+    // custom types and interfaces👇
     type Inputfunc = {
         preventDefault : Function
     }
+
+    // Hide navbar and status bar👇
+    const updateNavState = NavbarDisplay();
+    const updateSideBar = SidebarContext();
+    updateNavState(props.navbar);
+    updateSideBar(props.sidebar);
+
     const { signinController } = AuthFunction();
 
     const signUpHandler = async(e: Inputfunc) => {
@@ -34,10 +38,6 @@ export default function Login() {
         setAlertMessage(message);
         message == "" && history.push("/");
         setLoadingState(false);
-    }
-
-    const responseGoogle = (response:any) => {
-        console.log(response);
     }
 
     return (
@@ -73,4 +73,13 @@ export default function Login() {
             </Form>
         </div>
     )
+};
+
+export async function getStaticProps(context : any){
+    return {
+        props : {
+            navbar : false,
+            sidebar : false
+        }
+    }
 }

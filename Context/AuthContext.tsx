@@ -8,7 +8,7 @@ interface AuthInterface {
     signupController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
     signinController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
     logOutFunction ?: {(): void},
-    user ?: any
+    accessToken ?: string
 }
 const AuthProvider = createContext<AuthInterface>({});
 
@@ -95,7 +95,10 @@ export default function AuthContext(props: Props){
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(res => setAccessToken(""))
+        }).then(res => setAccessToken(function(token : string){
+            history.push("/login");
+            return "empty";
+        }))
         .catch(err => console.log(err));
     };
 
