@@ -33,6 +33,7 @@ export default function Signup() {
         let password_2 = (document.querySelector("#confirm_password") as HTMLInputElement).value;
         if (password_1 !== password_2) {
             setAlertMessage("Password mismatch");
+            setLoadingState(false);
             return;
         };
         let message = signupController ?await signupController(email, password): "";

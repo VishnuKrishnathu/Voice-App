@@ -37,7 +37,13 @@ export default function AuthContext(props: Props){
 
     // Refreshing and setting token👇
     async function refreshAccessToken (){
-        let response = await fetch(`${Route().BASE_URL}/refresh`).then(res => res.json())
+        let response = await fetch(`${Route().BASE_URL}/refresh`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        }).then(res => res.json())
         .then((data: {
             verified : boolean,
             accessToken : string,
@@ -50,6 +56,10 @@ export default function AuthContext(props: Props){
                 return;
             };
             setAccessToken(data.accessToken);
+            setAccessToken((prev : string) : string=> {
+                history.push('/');
+                return data.accessToken;
+            })
         });
     }
 
@@ -78,7 +88,15 @@ export default function AuthContext(props: Props){
     };
 
     async function logOutFunction (){
-        console.log("logged");
+        console.log("logout function called");
+        await fetch(`${Route().BASE_URL}/logout`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => setAccessToken(""))
+        .catch(err => console.log(err));
     };
 
 
@@ -90,6 +108,7 @@ export default function AuthContext(props: Props){
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body : JSON.stringify({
                 emailId: emailID,
                 password: passwordConfirmed
