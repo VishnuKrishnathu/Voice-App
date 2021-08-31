@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
 import { SidebarContext } from '../components/Sidebar';
 import { Form, Alert, Button } from 'react-bootstrap';
-
+import Link from 'next/link';
 
 export default function Signup() {
     const [email, setEmail] = useState<string>("");
@@ -17,7 +17,7 @@ export default function Signup() {
     // Hide navbar and status bar👇
     const updateNavState = NavbarDisplay();
     const updateSideBar = SidebarContext();
-    updateNavState(false);
+    updateNavState.hideNavBar();
     updateSideBar(false);
 
     const { signupController } = AuthFunction();
@@ -85,6 +85,12 @@ export default function Signup() {
                 {!loadingState && <Button type="submit" className="mt-2">SIGN UP</Button>}
                 {loadingState && <Button type="submit" className="mt-2" disabled={true}>Please wait ....</Button>}
             </Form>
+            <div>
+                Already have an account?
+                <Link href="/login">
+                    <a style={{display: "inline"}} className="mx-1">Login</a>
+                </Link>
+            </div>
         </div>
     )
 }

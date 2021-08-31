@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 // import GoogleLogin from 'react-google-login';
 import { AuthFunction } from '../Context/AuthContext';
 import { Form, Button, Alert } from "react-bootstrap";
+import Link from "next/link";
 
 export default function Login(props : {
     navbar : boolean,
@@ -24,7 +25,7 @@ export default function Login(props : {
     // Hide navbar and status bar👇
     const updateNavState = NavbarDisplay();
     const updateSideBar = SidebarContext();
-    updateNavState(props.navbar);
+    updateNavState.hideNavBar();
     updateSideBar(props.sidebar);
 
     const { signinController } = AuthFunction();
@@ -71,6 +72,12 @@ export default function Login(props : {
                 </Form.Group>
                 <Button type="submit" className="mt-2" disabled= {loadingState}>LOGIN</Button>
             </Form>
+            <div>
+                Don't have an account?
+                <Link href="/signup"><a className="mx-1" style={{
+                    display: "inline"
+                }}>Signup</a></Link>
+            </div>
         </div>
     )
 };

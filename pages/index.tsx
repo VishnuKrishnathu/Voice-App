@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import Head from 'next/head'
 import { NavbarDisplay } from '../components/Navbar';
 import { SidebarContext } from '../components/Sidebar';
-import { io } from 'socket.io-client';
+import  io from 'socket.io-client';
 import { AuthFunction } from "../Context/AuthContext";
 import Route from '../Context/Env';
 
@@ -13,16 +13,14 @@ export default function Home() {
   // Show navbar and status bar👇
   const updateNavState = NavbarDisplay();
   const updateSideBar = SidebarContext();
-  updateNavState(true);
+  updateNavState.displayNavBar();
   updateSideBar(true);
 
   useEffect(()=> {
-    const socket = io(`http://localhost:5050`, {
-      auth : {
-        token : accessToken
-      }
-    });
-    socket.emit('custom-event', "Hello World");
+    console.log("triggered");
+    const socket = io(`${Route().BASE_URL}`,{ transports : ['websocket'] });
+    // console.log(socket);
+
   }, [accessToken]);
 
   return (

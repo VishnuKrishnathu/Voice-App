@@ -9,7 +9,15 @@ type Props ={
     children : JSX.Element
 }
 
-const Navbardisplay = createContext<Function>(()=> {});
+interface INavBar {
+    hideNavBar : Function,
+    displayNavBar : Function
+}
+
+const Navbardisplay = createContext<INavBar>({
+    hideNavBar : function(){},
+    displayNavBar : function(){}
+});
 
 export const NavbarDisplay = ()=> {
     return useContext(Navbardisplay);
@@ -21,9 +29,20 @@ export default function Navbar(props: Props) {
 
     const { logOutFunction } = AuthFunction();
 
-    function updateNavState(val: boolean){
-        setNavbarDisplay(val);
+    const updateNavState = {
+        hideNavBar,
+        displayNavBar
     }
+
+    function hideNavBar(){
+        setNavbarDisplay(false);
+    }
+
+    function displayNavBar() {
+        setNavbarDisplay(true);
+    }
+
+
     return (
         <Navbardisplay.Provider value={updateNavState}>
             {navbardisplay ? <>
