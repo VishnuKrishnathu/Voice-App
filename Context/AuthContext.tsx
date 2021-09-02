@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import Route from './Env';
+import {Route} from './Env';
 import { useRouter } from 'next/router';
+
 
 
 interface AuthInterface {
@@ -37,7 +38,7 @@ export default function AuthContext(props: Props){
 
     // Refreshing and setting token👇
     async function refreshAccessToken (){
-        let response = await fetch(`${Route().BASE_URL}/refresh`, {
+        let response = await fetch(`${Route.BASE_URL}/refresh`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -57,7 +58,8 @@ export default function AuthContext(props: Props){
             };
             setAccessToken(data.accessToken);
             setAccessToken((prev : string) : string=> {
-                history.push('/');
+                // history.push('/');
+                console.log("Access Token Received");
                 return data.accessToken;
             })
         });
@@ -66,7 +68,7 @@ export default function AuthContext(props: Props){
     // Sign up function👇
     async function signupController (emailID: string, passwordConfirmed: string): Promise<string | void> {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
-        const response = await fetch(`${Route().BASE_URL}/signin`, {
+        const response = await fetch(`${Route.BASE_URL}/signin`, {
             method: 'POST',
             credentials: "include",
             headers: {
@@ -89,7 +91,7 @@ export default function AuthContext(props: Props){
 
     async function logOutFunction (){
         console.log("logout function called");
-        await fetch(`${Route().BASE_URL}/logout`, {
+        await fetch(`${Route.BASE_URL}/logout`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -106,7 +108,7 @@ export default function AuthContext(props: Props){
     // Login up function👇 
     async function signinController (emailID: string, passwordConfirmed: string):Promise<string | void> {
         if (emailID === "" || passwordConfirmed === "") return "";
-        let response = await fetch(`${Route().BASE_URL}/login`, {
+        let response = await fetch(`${Route.BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

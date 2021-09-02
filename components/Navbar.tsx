@@ -1,6 +1,7 @@
 import React, {createContext, useState, useContext } from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
+import Link from 'next/link';
 import { ListGroup, Button } from "react-bootstrap";
 import { AuthFunction } from "../Context/AuthContext";
 
@@ -83,7 +84,13 @@ export default function Navbar(props: Props) {
                                     <Button 
                                         onClick={logOutFunction}
                                         className="py-2 px-3"
+                                        style={{width: "100%"}}
                                     >Logout</Button>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    <Link href="/managerooms">
+                                        <a className="text-decoration-none text-dark">Room Settings</a>
+                                    </Link>
                                 </ListGroup.Item>
                             </ListGroup>
                         </div>

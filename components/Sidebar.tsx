@@ -6,7 +6,15 @@ type Props = {
     children : JSX.Element
 }
 
-const SidebarDisplay = createContext<Function>(function(){});
+interface ISidebarDisplay {
+    hideSidebar : Function,
+    showSidebar : Function
+}
+
+const SidebarDisplay = createContext<ISidebarDisplay>({
+    hideSidebar : ()=> {},
+    showSidebar: ()=> {}
+});
 
 export const SidebarContext = () => {
     return useContext(SidebarDisplay);
@@ -14,8 +22,13 @@ export const SidebarContext = () => {
 
 export default function Sidebar(props: Props) {
     const [sideBarStatus, setSideBarStatus] = useState<boolean>(true);
-    function updateSideBar(val: boolean) {
-        setSideBarStatus(val);
+    const updateSideBar = {
+        hideSidebar : function(){
+            setSideBarStatus(false)
+        },
+        showSidebar : function(){
+            setSideBarStatus(true);
+        }
     }
     return (
         <SidebarDisplay.Provider value={updateSideBar}>

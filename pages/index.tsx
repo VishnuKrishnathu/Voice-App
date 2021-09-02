@@ -4,7 +4,7 @@ import { NavbarDisplay } from '../components/Navbar';
 import { SidebarContext } from '../components/Sidebar';
 import  io from 'socket.io-client';
 import { AuthFunction } from "../Context/AuthContext";
-import Route from '../Context/Env';
+import {Route} from '../Context/Env';
 
 export default function Home() {
 
@@ -14,11 +14,11 @@ export default function Home() {
   const updateNavState = NavbarDisplay();
   const updateSideBar = SidebarContext();
   updateNavState.displayNavBar();
-  updateSideBar(true);
+  updateSideBar.showSidebar();
 
   useEffect(()=> {
     console.log("triggered");
-    const socket = io(`${Route().BASE_URL}`,{ transports : ['websocket'] });
+    const socket = io(`${Route.BASE_URL}`,{ transports : ['websocket'] });
     // console.log(socket);
 
   }, [accessToken]);

@@ -1,0 +1,14 @@
+.room_card {
+    height: 10rem;
+    width : 10rem;
+    background: hsl(190, 76%, 40%);
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 7rem;
+    cursor: pointer;
+}
+
+.room_input{
+    width: 11rem;
+    display: inline-block;
+}

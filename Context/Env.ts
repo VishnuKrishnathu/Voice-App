@@ -1,5 +1,3 @@
-export default function Route() {
-    return {
-        BASE_URL : "http://localhost:5000"
-    }
+export const Route =  {
+    BASE_URL : "http://localhost:5000"
 }

@@ -26,7 +26,7 @@ export default function Login(props : {
     const updateNavState = NavbarDisplay();
     const updateSideBar = SidebarContext();
     updateNavState.hideNavBar();
-    updateSideBar(props.sidebar);
+    updateSideBar.hideSidebar();
 
     const { signinController } = AuthFunction();
 

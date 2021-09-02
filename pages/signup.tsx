@@ -18,7 +18,7 @@ export default function Signup() {
     const updateNavState = NavbarDisplay();
     const updateSideBar = SidebarContext();
     updateNavState.hideNavBar();
-    updateSideBar(false);
+    updateSideBar.hideSidebar();
 
     const { signupController } = AuthFunction();
 
