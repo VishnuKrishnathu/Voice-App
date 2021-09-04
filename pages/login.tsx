@@ -4,14 +4,14 @@ import { SidebarContext} from '../components/Sidebar';
 import { useRouter } from 'next/router';
 // import GoogleLogin from 'react-google-login';
 import { AuthFunction } from '../Context/AuthContext';
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, InputGroup, FormControl } from "react-bootstrap";
 import Link from "next/link";
 
 export default function Login(props : {
     navbar : boolean,
     sidebar : boolean
 }) {
-    const [email, setEmail] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [alertMessage, setAlertMessage] = useState<string | void>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
@@ -35,7 +35,7 @@ export default function Login(props : {
 
         setAlertMessage("");
         setLoadingState(true);
-        let message = signinController ? await signinController(email, password) : "";
+        let message = signinController ? await signinController(username, password) : "";
         setAlertMessage(message);
         message == "" && history.push("/");
         setLoadingState(false);
@@ -49,21 +49,24 @@ export default function Login(props : {
                 </Alert>}
             <Form onSubmit= {signUpHandler}>
                 <Form.Group className="my-1">
-                    <Form.Label>Email Id</Form.Label>
-                    <Form.Control
-                        type="email"
-                        style= {{width: "max(250px, 25vw)"}}
-                        required
-                        onChange = {(e)=> {
-                            setEmail(e.target.value);
-                        }}
-                    />
+                    <Form.Label >
+                        Username
+                    </Form.Label>
+                    <InputGroup className="mb-2">
+                        <InputGroup.Text>@</InputGroup.Text>
+                        <FormControl 
+                            id="inlineFormInputGroup" 
+                            placeholder="Username" 
+                            onChange={e => setUsername(e.target.value)}
+                        />
+                    </InputGroup>
                 </Form.Group>
                 <Form.Group className="my-1">
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
                         type="password" 
                         required
+                        placeholder="Password"
                         style= {{width: "max(250px, 25vw)"}}
                         onChange= {e => {
                             setPassword(e.target.value);

@@ -32,9 +32,7 @@
     transform: translateY(-50%);
 }
 
-.profile_section > img{
-    height: 2.5rem;
-    width: 2.5rem;
+.profile_section_img {
     border-radius: 50%;
 }
 .profile_section > div >label > img{

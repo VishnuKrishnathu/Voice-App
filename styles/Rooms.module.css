@@ -6,6 +6,43 @@
     font-weight: 700;
     font-size: 7rem;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.room_card_data {
+    height: 10rem;
+    width : 10rem;
+    background: hsl(190, 76%, 40%);
+    border-radius: 50%;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.room_card > div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    inset: 0;
+    place-items: center;
+    transition: 0.3s;
+    opacity: 0;
+    transform: translateY(-100%);
+}
+
+.room_card span{
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.room_card:hover > span{
+    transform: translateY(100%);
+    opacity: 0;
+}
+.room_card:hover > div{
+    transform: translateY(0%);
+    opacity: 1;
 }
 
 .room_input{

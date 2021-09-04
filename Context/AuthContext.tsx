@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 
 interface AuthInterface {
     refreshAccessToken ?: {() :void },
-    signupController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
-    signinController ?: {(emailID: string, passwordConfirmed: string): Promise<string | void>},
+    signupController ?: {(emailID: string, passwordConfirmed: string, username : string): Promise<string | void>},
+    signinController ?: {(username: string, passwordConfirmed: string): Promise<string | void>},
     logOutFunction ?: {(): void},
     accessToken ?: string
 }
@@ -38,6 +38,7 @@ export default function AuthContext(props: Props){
 
     // Refreshing and setting token👇
     async function refreshAccessToken (){
+        console.log("refreshing the token .....");
         let response = await fetch(`${Route.BASE_URL}/refresh`, {
             method: 'GET',
             headers: {
@@ -50,6 +51,7 @@ export default function AuthContext(props: Props){
             accessToken : string,
             error ?: string
         }) => {
+            console.log("accessToken received >>>",data)
             if(!data.verified) {
                 if(location.pathname === "/login") return;
                 history.push("/signup");
@@ -66,7 +68,7 @@ export default function AuthContext(props: Props){
     }
 
     // Sign up function👇
-    async function signupController (emailID: string, passwordConfirmed: string): Promise<string | void> {
+    async function signupController (emailID: string, passwordConfirmed: string, username : string): Promise<string | void> {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
         const response = await fetch(`${Route.BASE_URL}/signin`, {
             method: 'POST',
@@ -76,10 +78,12 @@ export default function AuthContext(props: Props){
             },
             body: JSON.stringify({
                 emailId: emailID,
-                password: passwordConfirmed
+                password: passwordConfirmed,
+                username : username
             })
         }).then( res => res.json())
         .then((data : ISigninResponse)=> {
+            console.log(data);
             if(! data.userCreated) return data.error;
             history.push('/');
             setAccessToken(data.accessToken);
@@ -106,8 +110,8 @@ export default function AuthContext(props: Props){
 
 
     // Login up function👇 
-    async function signinController (emailID: string, passwordConfirmed: string):Promise<string | void> {
-        if (emailID === "" || passwordConfirmed === "") return "";
+    async function signinController (username: string, passwordConfirmed: string):Promise<string | void> {
+        if (username === "" || passwordConfirmed === "") return "";
         let response = await fetch(`${Route.BASE_URL}/login`, {
             method: 'POST',
             headers: {
@@ -115,7 +119,7 @@ export default function AuthContext(props: Props){
             },
             credentials: 'include',
             body : JSON.stringify({
-                emailId: emailID,
+                username : username,
                 password: passwordConfirmed
             })
         }).then(res => res.json())

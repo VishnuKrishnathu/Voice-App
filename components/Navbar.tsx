@@ -2,8 +2,10 @@ import React, {createContext, useState, useContext } from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ListGroup, Button } from "react-bootstrap";
 import { AuthFunction } from "../Context/AuthContext";
+import profilePic from "../public/black-pp.webp";
 
 type Props ={
     title? : string,
@@ -53,9 +55,12 @@ export default function Navbar(props: Props) {
                 <div className={styles.navbar}>
                     <Searchbar/>
                     <div className={styles.profile_section} style={{display:"flex"}}>
-                        <img 
-                            src="black-pp.webp" 
+                        <Image
+                            src={ profilePic }
                             alt="profile picture"
+                            className={styles.profile_section_img}
+                            height="33"
+                            width= "33"
                         />
                         <div>
                             <label htmlFor="dropdown_button">
@@ -87,9 +92,11 @@ export default function Navbar(props: Props) {
                                         style={{width: "100%"}}
                                     >Logout</Button>
                                 </ListGroup.Item>
-                                <ListGroup.Item>
+                                <ListGroup.Item className="p-0">
                                     <Link href="/managerooms">
-                                        <a className="text-decoration-none text-dark">Room Settings</a>
+                                        <Button
+                                            style={{width: "100%"}}
+                                        >Manage rooms</Button>
                                     </Link>
                                 </ListGroup.Item>
                             </ListGroup>

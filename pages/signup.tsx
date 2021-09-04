@@ -3,14 +3,20 @@ import { NavbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
 import { SidebarContext } from '../components/Sidebar';
-import { Form, Alert, Button } from 'react-bootstrap';
+import { Form, Alert, Button, InputGroup, FormControl } from 'react-bootstrap';
 import Link from 'next/link';
+import Image from 'next/image';
+import SuccessUsername from '../public/success-username.svg';
+import ErrorUsername from '../public/error-username.svg';
+import {Route} from '../Context/Env';
 
 export default function Signup() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [alertMessage, setAlertMessage] = useState<string | void>("");
+    const [username, setUsername] = useState<string>("");
     const [loadingState, setLoadingState] = useState<boolean>(false);
+    const [usernameError, setUsernameError] = useState<boolean>(true);
 
     const history = useRouter();
 
@@ -27,8 +33,10 @@ export default function Signup() {
     type Inputfunc = {
         preventDefault : Function
     }
-    const signupUser = async (e : Inputfunc) => {
+    const signupUser = async (e : any) => {
         e.preventDefault();
+        if(usernameError) return;
+        console.log(e.target["1"].value);
         setLoadingState(true);
         setAlertMessage("");
         let password_1 = (document.querySelector("#password") as HTMLInputElement).value;
@@ -38,10 +46,32 @@ export default function Signup() {
             setLoadingState(false);
             return;
         };
-        let message = signupController ?await signupController(email, password): "";
+        let message = signupController ?await signupController(email, password, username): "";
         setAlertMessage(message);
-        // message === "" && history.push("/");
+        message === "" && history.push("/");
         setLoadingState(false);
+    }
+
+    function validateUsername(e : any){
+        if(e.target.value == "") setUsernameError(true);
+        let user_arr = e.target.value.split(" ");
+        if(user_arr.length >= 2) {
+            setAlertMessage("Username cannot have a space");
+        }else{
+            setUsername(e.target.value);
+            fetch(`${Route.BASE_URL}/validateUsername?username=${e.target.value}`)
+            .then(res => res.json())
+            .then((data : {
+                error : boolean,
+                message : string
+            }) => {
+                !data.error && setUsernameError(false);
+                if(data.error){
+                    setAlertMessage(data.message);
+                }
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     return (
@@ -60,6 +90,28 @@ export default function Signup() {
                         required
                         autoComplete= ""
                     />
+                </Form.Group>
+                <Form.Group className="py-1">
+                    <Form.Label>Username</Form.Label>
+                    <InputGroup className="mb-2">
+                        <InputGroup.Text>
+                        {
+                            usernameError ? 
+                            <Image 
+                                src={ErrorUsername}
+                            /> : 
+                            <Image 
+                                src = {SuccessUsername}
+                            />
+                        }
+                        </InputGroup.Text>
+                        <FormControl
+                            id="inlineFormInputGroup" 
+                            placeholder="Username" 
+                            value = {username}
+                            onChange={validateUsername}
+                        />
+                    </InputGroup>
                 </Form.Group>
                 <Form.Group className="py-1">
                     <Form.Label>Password</Form.Label>
