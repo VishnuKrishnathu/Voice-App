@@ -83,7 +83,6 @@ export default function AuthContext(props: Props){
             })
         }).then( res => res.json())
         .then((data : ISigninResponse)=> {
-            console.log(data);
             if(! data.userCreated) return data.error;
             history.push('/');
             setAccessToken(data.accessToken);
@@ -93,9 +92,9 @@ export default function AuthContext(props: Props){
         return response;
     };
 
-    async function logOutFunction (){
+    function logOutFunction (){
         console.log("logout function called");
-        await fetch(`${Route.BASE_URL}/logout`, {
+        fetch(`${Route.BASE_URL}/logout`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -107,7 +106,6 @@ export default function AuthContext(props: Props){
         }))
         .catch(err => console.log(err));
     };
-
 
     // Login up function👇 
     async function signinController (username: string, passwordConfirmed: string):Promise<string | void> {

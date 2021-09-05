@@ -50,7 +50,8 @@ export default function Navbar(props: Props) {
         <Navbardisplay.Provider value={updateNavState}>
             {navbardisplay ? <>
             <div style={{
-                position: "sticky"
+                position: "sticky",
+                zIndex : 10
             }}>
                 <div className={styles.navbar}>
                     <Searchbar/>

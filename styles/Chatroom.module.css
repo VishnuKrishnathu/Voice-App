@@ -4,14 +4,13 @@
     border-radius: 10px;
     background: #C3F3C0;
     position: relative;
+    /* z-index: -2; */
 }
 
 .chat_textarea {
     position: absolute;
     bottom: 2%;
     height: 30px;
-    /* left: 2%; */
-    /* right: 2%; */
 }
 
 .chat_send_button{

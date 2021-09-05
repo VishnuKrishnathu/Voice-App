@@ -8,10 +8,6 @@ import Send from "../../public/send-button.svg";
 
 export default function VoiceRooms() {
 
-    useEffect(function(){
-        console.log("component mounted");
-    }, [])
-
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
     const updateSideBar = SidebarContext();
@@ -28,8 +24,6 @@ export default function VoiceRooms() {
             <Button className={`${styles.chat_send_button} p-0 d-flex align-items-center justify-content-center`}>
                 <Image 
                     src={Send}
-                    // height= "26"
-                    // width = "26"
                 />
             </Button>
         </div>
