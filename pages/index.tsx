@@ -1,41 +1,53 @@
-import React, { useContext, useEffect } from 'react';
-import Head from 'next/head'
+import React, { useEffect, useState } from 'react';
 import { NavbarDisplay } from '../components/Navbar';
-import { SidebarContext } from '../components/Sidebar';
-import  io from 'socket.io-client';
-import { AuthFunction } from "../Context/AuthContext";
-import {Route} from '../Context/Env';
+import { AuthFunction } from '../Context/AuthContext';
+import { Route } from '../Context/Env';
+import styles from "../styles/Rooms.module.css";
+import Link from 'next/link';
 
-export default function Home() {
+export default function managerooms() {
+    const [rooms, setRooms] = useState<Array<any>>([]);
+    // Hide navbar and sidebar👇
+    const updateNavState = NavbarDisplay();
+    updateNavState.displayNavBar();
+    const {accessToken} = AuthFunction();
 
-  const { accessToken } = AuthFunction();
+    useEffect(function() {
+        console.log("checking for the rooms", accessToken);
+        fetch(`${Route.BASE_URL}/checkRooms`, {
+            method : 'GET',
+            headers : {
+                'Authorization' : `Bearer ${accessToken}`
+            }
+        }).then( res => res.json())
+        .then(data => {
+            console.log(data)
+            if(data.error !== undefined && data.error == false) setRooms(data.rooms);
+        })
+        .catch(err => console.log(err));
+    }, [accessToken, Route])
 
-  // Show navbar and status bar👇
-  const updateNavState = NavbarDisplay();
-  const updateSideBar = SidebarContext();
-  updateNavState.displayNavBar();
-  updateSideBar.showSidebar();
+    useEffect(() => {
+        console.log(rooms)
+    }, [rooms, accessToken])
 
-  useEffect(()=> {
-    console.log("triggered");
-    const socket = io(`${Route.BASE_URL}`,{ transports : ['websocket'] });
-    // console.log(socket);
-
-  }, [accessToken]);
-
-  return (
-    <>
-      <Head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-      </Head>
-      <div style={{
-        background: "var(--secondary-color)",
-        height: "calc(100vh - 3rem - 30px)",
-        width: "100%",
-        margin: "0px 20px",
-        borderRadius: "10px"
-      }}></div>
-    </>
-  )
+    return (
+        <div style = {{width : "100%", height: "100%"}} className="d-flex">
+            <Link href="/createRoom">
+                <div className={`${styles.room_card} mx-2 d-flex flex-column align-items-center justify-content-center `}>
+                    <div style={{fontSize: "1.3rem"}}>Create Room</div>
+                    <span>+</span>
+                </div>
+            </Link>
+            {rooms.map(function(room){
+                return(
+                <Link href={`/${room._id}`}>
+                    <div className={`${styles.room_card_data} mx-2 d-flex align-items-center justify-content-center`} >
+                        <div>{room.roomName}</div>
+                    </div>
+                </Link>
+                )
+            })}
+        </div>
+    )
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { NavbarDisplay } from '../../components/Navbar';
-import { SidebarContext } from '../../components/Sidebar';
 import { AuthFunction } from '../../Context/AuthContext';
 import { Route } from '../../Context/Env';
 import styles from "../../styles/Rooms.module.css";
@@ -10,9 +9,7 @@ export default function managerooms() {
     const [rooms, setRooms] = useState<Array<any>>([]);
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
-    const updateSideBar = SidebarContext();
     updateNavState.displayNavBar();
-    updateSideBar.hideSidebar();
     const {accessToken} = AuthFunction();
 
     useEffect(function() {
@@ -36,12 +33,6 @@ export default function managerooms() {
 
     return (
         <div style = {{width : "100%", height: "100%"}} className="d-flex">
-            <Link href="managerooms/createRoom/">
-                <div className={`${styles.room_card} mx-2 d-flex flex-column align-items-center justify-content-center `}>
-                    <div style={{fontSize: "1.3rem"}}>Create Room</div>
-                    <span>+</span>
-                </div>
-            </Link>
             {rooms.map(function(room){
                 return(
                 <Link href={`/managerooms/${room._id}`}>

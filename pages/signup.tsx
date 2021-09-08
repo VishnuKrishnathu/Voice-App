@@ -2,7 +2,6 @@ import React, {useContext, useState, useEffect } from 'react';
 import { NavbarDisplay } from '../components/Navbar';
 import { useRouter } from 'next/router';
 import { AuthFunction } from "../Context/AuthContext";
-import { SidebarContext } from '../components/Sidebar';
 import { Form, Alert, Button, InputGroup, FormControl } from 'react-bootstrap';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -22,9 +21,7 @@ export default function Signup() {
 
     // Hide navbar and status bar👇
     const updateNavState = NavbarDisplay();
-    const updateSideBar = SidebarContext();
     updateNavState.hideNavBar();
-    updateSideBar.hideSidebar();
 
     const { signupController } = AuthFunction();
 
@@ -108,6 +105,7 @@ export default function Signup() {
                         <FormControl
                             id="inlineFormInputGroup" 
                             placeholder="Username" 
+                            style= {{width: "max(250px, 27vw)"}}
                             value = {username}
                             onChange={validateUsername}
                         />

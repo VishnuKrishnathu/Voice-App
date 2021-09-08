@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { NavbarDisplay } from '../../components/Navbar';
-import { SidebarContext } from '../../components/Sidebar';
+import { NavbarDisplay } from '../components/Navbar';
 import { Form, Button, Dropdown, FloatingLabel, Alert } from 'react-bootstrap';
-import styles from '../../styles/Rooms.module.css';
-import { Route } from "../../Context/Env";
-import { AuthFunction } from '../../Context/AuthContext';
+import styles from '../styles/Rooms.module.css';
+import { Route } from "../Context/Env";
+import { AuthFunction } from '../Context/AuthContext';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -15,9 +14,7 @@ export default function createRoom() {
     const history = useRouter();
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
-    const updateSideBar = SidebarContext();
     updateNavState.hideNavBar();
-    updateSideBar.hideSidebar();
 
     const {accessToken} = AuthFunction();
     function submitHandler(e : any){
