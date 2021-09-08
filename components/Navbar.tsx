@@ -48,6 +48,7 @@ export default function Navbar(props: Props) {
 
     return (
         <Navbardisplay.Provider value={updateNavState}>
+            <div className="d-flex flex-column" style={{height: "100vh"}}>
             {navbardisplay ? <>
             <div style={{
                 position: "sticky",
@@ -107,6 +108,7 @@ export default function Navbar(props: Props) {
             </div>
             </> : null}
             {props.children}
+            </div>
         </Navbardisplay.Provider>
     )
 }

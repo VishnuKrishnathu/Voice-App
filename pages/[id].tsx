@@ -7,6 +7,7 @@ import Send from "../public/send-button.svg";
 import { Route } from "../Context/Env";
 import { useRouter } from 'next/router';
 import { AuthFunction } from '../Context/AuthContext';
+import {io} from "socket.io-client";
 
 export default function VoiceRooms() {
     const [messages, setMessages ] = useState<Array<any>>([]);
@@ -15,20 +16,33 @@ export default function VoiceRooms() {
 
     const { userData } = AuthFunction();
 
+    useEffect(() => {
+    })
+    
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
     updateNavState.displayNavBar();
-
+    
     // checks if the room actually exists
     useEffect(function(){
+        const controller = new window.AbortController();
         let roomarr = window.location.href.split("/");
         let roomId = roomarr[roomarr.length-1];
         console.log(roomId);
-        fetch(`${Route.BASE_URL}/validateRoomId?roomId=${roomId}`)
+        fetch(`${Route.BASE_URL}/validateRoomId?roomId=${roomId}`, {
+            "signal": controller.signal
+        })
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => history.push("/"));
-    }, []);
+
+        return function(){
+            controller.abort()
+        }
+    }, 
+    []
+    );
+
 
     function sendMessageHandler(e :any){
         e.preventDefault();
@@ -67,7 +81,7 @@ export default function VoiceRooms() {
                 <Form.Control 
                     as="textarea" 
                     style={{resize: "none"}}
-                    className={`${styles.chat_textarea}`}
+                    className={`${styles.chat_textarea} m-0 p-0`}
                 />
                 <Button className={`${styles.chat_send_button} p-0 d-flex align-items-center justify-content-center`} type="submit">
                     <Image 
