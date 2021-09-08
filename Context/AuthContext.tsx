@@ -2,14 +2,20 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import {Route} from './Env';
 import { useRouter } from 'next/router';
 
-
+interface IUserModel {
+    emailId ?: string;
+    password ?: string;
+    username ?: string;
+}
 
 interface AuthInterface {
-    refreshAccessToken ?: {() :void },
-    signupController ?: {(emailID: string, passwordConfirmed: string, username : string): Promise<string | void>},
-    signinController ?: {(username: string, passwordConfirmed: string): Promise<string | void>},
-    logOutFunction ?: {(): void},
-    accessToken ?: string
+    refreshAccessToken ?: {() :void };
+    signupController ?: {(emailID: string, passwordConfirmed: string, username : string): Promise<string | void>};
+    signinController ?: {(username: string, passwordConfirmed: string): Promise<string | void>};
+    logOutFunction ?: {(): void};
+    accessToken ?: string;
+    userData ?: IUserModel;
+
 }
 const AuthProvider = createContext<AuthInterface>({});
 
@@ -32,6 +38,11 @@ interface ISigninResponse {
 // Authentication method👇
 export default function AuthContext(props: Props){
     const [accessToken, setAccessToken] = useState<string>("");
+    const [userData, setUserData] = useState<IUserModel>({
+        emailId : "",
+        password: "",
+        username: ""
+    })
 
 
     const history = useRouter();
@@ -137,6 +148,17 @@ export default function AuthContext(props: Props){
     // fetching access token if not found in the memory👇
     useEffect(function () {
         if(accessToken === "") refreshAccessToken();
+        else{
+            fetch(`${Route.BASE_URL}/getUser`, {
+                method : 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${accessToken}`
+                }
+            }).then(res => res.json())
+            .then(data => setUserData(data))
+            .catch(err => console.log('Error in getting the users data', err));
+        }
     }, [accessToken]);
 
     const value = {
@@ -144,7 +166,8 @@ export default function AuthContext(props: Props){
         signupController,
         signinController,
         logOutFunction,
-        accessToken
+        accessToken,
+        userData
     }
     return (
         <>

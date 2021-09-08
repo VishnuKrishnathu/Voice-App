@@ -1,6 +1,5 @@
-import React, {useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { NavbarDisplay } from '../components/Navbar';
-import { SidebarContext} from '../components/Sidebar';
 import { useRouter } from 'next/router';
 // import GoogleLogin from 'react-google-login';
 import { AuthFunction } from '../Context/AuthContext';
@@ -24,9 +23,7 @@ export default function Login(props : {
 
     // Hide navbar and status bar👇
     const updateNavState = NavbarDisplay();
-    const updateSideBar = SidebarContext();
     updateNavState.hideNavBar();
-    updateSideBar.hideSidebar();
 
     const { signinController } = AuthFunction();
 
@@ -47,7 +44,7 @@ export default function Login(props : {
                 <Alert variant="danger">
                     {(typeof alertMessage === "string") ?alertMessage: null}
                 </Alert>}
-            <Form onSubmit= {signUpHandler}>
+            <Form onSubmit= {signUpHandler} className={`d-flex justify-content-evenly align-items-center flex-column`}>
                 <Form.Group className="my-1">
                     <Form.Label >
                         Username
@@ -61,13 +58,12 @@ export default function Login(props : {
                         />
                     </InputGroup>
                 </Form.Group>
-                <Form.Group className="my-1">
+                <Form.Group className="my-1" style={{width: "100%"}}>
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
                         type="password" 
                         required
                         placeholder="Password"
-                        style= {{width: "max(250px, 25vw)"}}
                         onChange= {e => {
                             setPassword(e.target.value);
                         }}
