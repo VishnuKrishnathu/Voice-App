@@ -54,7 +54,7 @@ export default function Navbar(props: Props) {
                 position: "sticky",
                 zIndex : 10
             }}>
-                <div className={styles.navbar}>
+                <div className={`${styles.navbar} m-2`}>
                     <Searchbar/>
                     <div className={styles.profile_section} style={{display:"flex"}}>
                         <Image

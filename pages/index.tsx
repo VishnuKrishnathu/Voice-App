@@ -32,7 +32,7 @@ export default function managerooms() {
     }, [rooms, accessToken])
 
     return (
-        <div style = {{width : "100%", height: "100%"}} className="d-flex">
+        <div style = {{width : "100%", height: "100%"}} className="d-flex mt-2">
             <Link href="/createRoom">
                 <div className={`${styles.room_card} mx-2 d-flex flex-column align-items-center justify-content-center `}>
                     <div style={{fontSize: "1.3rem"}}>Create Room</div>

@@ -32,7 +32,7 @@ export default function managerooms() {
     }, [rooms, accessToken])
 
     return (
-        <div style = {{width : "100%", height: "100%"}} className="d-flex">
+        <div style = {{width : "100%", height: "100%"}} className="d-flex mt-2">
             {rooms.map(function(room){
                 return(
                 <Link href={`/managerooms/${room._id}`}>
