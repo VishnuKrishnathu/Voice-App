@@ -1,11 +1,10 @@
 .navbar{
     background: var(--secondary-color);
     height: 3.0rem;
-    margin: 0px 20px;
+    /* margin: 0px 20px; */
     border-radius: 999px;
     display: flex;
     position: relative;
-    margin-top: 10px;
 }
 
 .searchbar{
