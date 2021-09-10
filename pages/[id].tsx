@@ -3,11 +3,18 @@ import { NavbarDisplay } from '../components/Navbar';
 import styles from '../styles/Chatroom.module.css';
 import { Button, FloatingLabel, Form } from 'react-bootstrap';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Send from "../public/send-button.svg";
 import { Route } from "../Context/Env";
 import { useRouter } from 'next/router';
 import { AuthFunction } from '../Context/AuthContext';
-import io from "socket.io-client";
+import { SocketContext } from '../Context/SocketConnect';
+// import ChatArea from '../components/ChatArea';
+const ChatArea = dynamic(function(){
+    return (import('../components/ChatArea'));
+}, {
+    ssr: false
+})
 
 export default function VoiceRooms() {
     // message data interface
@@ -16,8 +23,9 @@ export default function VoiceRooms() {
         message : string;
         messageId : number;
     }
+    // getting the socket context
+    const { socket } = SocketContext();
     // Inintiating the socket connection
-    const [ socket, setSocket ] = useState<any>();
     const [messages, setMessages ] = useState<Array<IMessage>>([{
         sender: "",
         message : "",
@@ -53,13 +61,6 @@ export default function VoiceRooms() {
         .then(data => console.log(data))
         .catch(err => history.push('/'));
 
-        setSocket((prev :any) => {
-            let socket = io(`${Route.BASE_URL}`, {
-                transports : ['websocket']
-            });
-            socket.emit('join-room', roomId);
-            return socket;
-        });
 
         return function(){
             controller.abort()
@@ -67,7 +68,9 @@ export default function VoiceRooms() {
     },[roomId, Route]);
 
     useEffect(() => {
+        if(!socket) return;
         try{
+            socket.emit('join-room', roomId);
             socket.on('receive-message', function(message : IMessage) {
                 console.log("Message received", message);
                 setMessages((prev : Array<IMessage>) => {
@@ -78,13 +81,13 @@ export default function VoiceRooms() {
             console.log("Error in receiving message", err);
         }
     }, [
-        socket
+        socket, roomId
     ])
 
     useEffect(() => {
         try{
             if(roomId == "" || !socket) return;
-            socket.emit('send-message', senderMessage, roomId, userData);
+            socket.volatile.emit('send-message', senderMessage, roomId, userData);
         }catch(err){
             console.error("message not sent", err);
         }
@@ -108,30 +111,8 @@ export default function VoiceRooms() {
     // useEffect(()=> console.log(messages), [messages]);
 
     return (
-        <div className={`mx-3 ${styles.chat_container} d-flex flex-column`}>
-            <div className={`${styles.chat_message_area} d-flex flex-column`}>
-                <div className={`${styles.log}`}>
-                {
-                    messages.map(message => {
-                        if(message.message !== ""){
-                        return(
-                                <div className={`${styles.messageBox}`}>
-                                <span className={`${styles.meta}`}>
-                                    <span className={`${styles.badges}`}>
-                                    </span>
-                                    <span className={`${styles.name} ${message.sender == userData?.username && styles.wrapper}`}>{message.sender}</span>
-                                    <i className={`${styles.metaBG}`}></i>
-                                </span>
-
-                                <span className={`${styles.message}`}>{message.message}</span>
-                                </div>
-                            
-                        )
-                        }
-                    })
-                }
-                </div>
-            </div>
+        <div className={`mx-3 ${styles.chat_container} d-flex flex-column`} style={{flexGrow: 1}}>
+            <ChatArea values={{userData, messages}}/>
             <Form className="d-flex align-items-center" onSubmit={sendMessageHandler}>
                 <Form.Control 
                     as="textarea" 

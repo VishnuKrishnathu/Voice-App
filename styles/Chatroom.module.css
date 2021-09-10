@@ -3,6 +3,7 @@
     border-radius: 10px;
     background: #190b44;
     position: relative;
+    overflow: hidden;
 }
 
 .chat_textarea {
@@ -18,7 +19,7 @@
 
 .chat_message_area{
     height: 100%;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .sender_chat{
@@ -63,7 +64,7 @@
 }
 
 .log .emote {
-    background-repeat: no-repeat;
+    /* background-repeat: no-repeat; */
     background-position: center;
     background-size: contain;
     padding: 0.4em 0.2em;
