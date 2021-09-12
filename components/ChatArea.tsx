@@ -31,8 +31,8 @@ export default function ChatArea(props : {
         setElementHeight(function(prev : number) {
             if(!divHeight.current) return 200;
             return divHeight.current.clientHeight;
-        })
-    }, [divHeight]);
+        });
+    }, [divHeight, messages]);
 
     useEffect(() => {
         scrollBar.current?.scrollToBottom();
@@ -44,8 +44,9 @@ export default function ChatArea(props : {
         }} className={`d-flex`} ref={divHeight}>
             <Scrollbars
                 autoHeight
-                autoHeightMin = {elementHeight-1}
-                autoHeightMax = {elementHeight}
+                autoHeightMin ={ elementHeight }
+                autoHeightMax ={ elementHeight }
+                style={{height : elementHeight}}
                 ref={scrollBar}
             >
                 <div className={`${styles.log} d-flex flex-column`} style={{

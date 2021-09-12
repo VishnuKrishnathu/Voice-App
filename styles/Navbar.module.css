@@ -13,13 +13,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.searchbar > input{
+.searchbar input{
     font-size: 1rem;
     padding: 0.5rem 1rem;
-    border-radius: 999px;
     border: none;
     outline-style: none;
-    width: 25vw;
+    width: 30vw;
+    border : 3px solid #585ba7;
 }
 
 .profile_section{
@@ -50,4 +50,11 @@
     overflow: hidden;
     transition: 0.2s;
     height: auto;
+}
+
+.addUser_image{
+    background: red;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
 }
