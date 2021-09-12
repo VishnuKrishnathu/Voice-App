@@ -30,7 +30,7 @@ export default function Navbar(props: Props) {
     const [navbardisplay, setNavbarDisplay] = useState<boolean>(true);
     const [profileDropDown, setProfileDropDown] = useState<boolean>(false);
 
-    const { logOutFunction } = AuthFunction();
+    const { logOutFunction, accessToken } = AuthFunction();
 
     const updateNavState = {
         hideNavBar,
@@ -55,7 +55,7 @@ export default function Navbar(props: Props) {
                 zIndex : 10
             }}>
                 <div className={`${styles.navbar} m-2`}>
-                    <Searchbar/>
+                    <Searchbar token={accessToken}/>
                     <div className={styles.profile_section} style={{display:"flex"}}>
                         <Image
                             src={ profilePic }

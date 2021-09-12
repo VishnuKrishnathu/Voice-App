@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { NavbarDisplay } from '../components/Navbar';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Chatroom.module.css';
-import { Button, FloatingLabel, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import Send from "../public/send-button.svg";
@@ -38,12 +37,6 @@ export default function VoiceRooms() {
     const history = useRouter();
     const { userData } = AuthFunction();
 
-
-    
-    // Hide navbar and sidebar👇
-    const updateNavState = NavbarDisplay();
-    updateNavState.displayNavBar();
-
     useEffect(function(){
         let roomarr = window.location.href.split("/");
         setRoomId(roomarr[roomarr.length-1]);
@@ -51,8 +44,7 @@ export default function VoiceRooms() {
     
     // checks if the room actually exists
     useEffect(function(){
-        if (roomId == "") return;
-        console.log("Room Id is here >>>", roomId)
+        if(roomId == "") return;
         const controller = new window.AbortController();
         fetch(`${Route.BASE_URL}/validateRoomId?roomId=${roomId}`, {
             "signal": controller.signal
@@ -60,6 +52,7 @@ export default function VoiceRooms() {
         .then(res => res.json())
         .then(data => console.log(data))
         .catch(err => history.push('/'));
+        // .catch(err => {console.log(`Error`, err)});
 
 
         return function(){

@@ -50,26 +50,40 @@ export default function Signup() {
     }
 
     function validateUsername(e : any){
+        setAlertMessage("");
         if(e.target.value == "") setUsernameError(true);
         let user_arr = e.target.value.split(" ");
         if(user_arr.length >= 2) {
             setAlertMessage("Username cannot have a space");
         }else{
             setUsername(e.target.value);
-            fetch(`${Route.BASE_URL}/validateUsername?username=${e.target.value}`)
-            .then(res => res.json())
-            .then((data : {
-                error : boolean,
-                message : string
-            }) => {
-                !data.error && setUsernameError(false);
-                if(data.error){
-                    setAlertMessage(data.message);
-                }
-            })
-            .catch(err => console.log(err));
         }
     }
+
+    useEffect(() => {
+        let controller = new window.AbortController();
+        fetch(`${Route.BASE_URL}/validateUsername?username=${username}`, {
+            method : 'GET',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            signal : controller.signal
+        })
+        .then(res => res.json())
+        .then((data : {
+            error : boolean,
+            message : string
+        }) => {
+            !data.error && setUsernameError(false);
+            if(data.error){
+                setAlertMessage(data.message);
+            }
+        })
+        .catch(err => {});
+        return () => {
+            controller.abort();
+        }
+    }, [username])
 
     return (
         <div style={{width: "100%", display:"grid", placeItems:"center"}}>
