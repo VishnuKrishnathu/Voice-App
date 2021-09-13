@@ -7,9 +7,14 @@ import { Button } from 'react-bootstrap';
 
 export default function Searchbar(props : {token : string | undefined}) {
     interface IResult {
-        username : string;
-        friendId : number | null;
-        pendingRequest : null | 1 | 0;
+        primaryUserId : number,
+        emailAddress : string,
+        username : string,
+        primaryFriendID : null | number,
+        requestSent : null | number,
+        USERID : number,
+        userId : null | number,
+        friendId : null | number
     }
 
     interface ISearchArr {
@@ -67,6 +72,22 @@ export default function Searchbar(props : {token : string | undefined}) {
             .catch(err => {console.log(err)});
         };
     }
+
+    function handleAcceptRequest(friendId : number){
+        return function(){
+            fetch(`${Route.BASE_URL}/acceptRequest`, {
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${props.token}`
+                },
+                body : JSON.stringify({friendId})
+            }).then(res => res.json()).
+            then(data => {
+                setFriendRequestStatus(prev => !prev);
+            }).catch(err => {console.log(err)});
+        };
+    }
     return (
         <div className={styles.searchbar }>
                 <input 
@@ -88,19 +109,29 @@ export default function Searchbar(props : {token : string | undefined}) {
                                     className="py-1 px-2 d-flex align-items-center justify-content-between"
                                 >
                                     {result.username}
-                                    { result.pendingRequest == null &&  <Button 
+                                    { !result.primaryFriendID && !result.requestSent && !result.userId && !result.friendId && 
+                                    <Button 
                                         className={`d-flex justify-content-center align-items-center`}
                                         onClick={ handleFriendRequest(result.username) }
                                     >
                                         <Image src={ userAdd }/>
                                     </Button>}
                                     {
-                                        result.pendingRequest == 1 && 
+                                        result.requestSent == 1 && 
                                         <Button 
                                             disabled={true}
                                             className={`d-flex justify-content-center align-items-center`}
                                         >
                                             <Image loader={() => checkedImage} src={ checkedImage } width="18" height="18" />
+                                        </Button>
+                                    }
+                                    {
+                                        !result.primaryFriendID && !result.requestSent && result.userId && result.friendId &&
+                                        <Button
+                                            className={`d-flex justify-content-center align-items-center`}
+                                            onClick={ handleAcceptRequest(result.primaryUserId) }
+                                        >
+                                            Accept request
                                         </Button>
                                     }
                                 </div>
