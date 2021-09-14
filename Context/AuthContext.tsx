@@ -138,7 +138,7 @@ export default function AuthContext(props: Props){
             accessToken ?: string
         }) => {
             if(!data.loggedIn) return data.error;
-            accessToken && setAccessToken(accessToken);
+            data.accessToken && setAccessToken(data.accessToken);
             return "";
         })
         .catch(err => console.log(err));

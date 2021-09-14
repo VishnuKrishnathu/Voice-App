@@ -9,12 +9,10 @@ export default function Searchbar(props : {token : string | undefined}) {
     interface IResult {
         primaryUserId : number,
         emailAddress : string,
-        username : string,
-        primaryFriendID : null | number,
+        username: string,
+        friendId : null | number,
         requestSent : null | number,
-        USERID : number,
-        userId : null | number,
-        friendId : null | number
+        foreignUserID : null | number
     }
 
     interface ISearchArr {
@@ -106,10 +104,10 @@ export default function Searchbar(props : {token : string | undefined}) {
                             return (
                                 <div
                                     style={{width: "30vw", borderBottom: "1px solid #000", cursor: "pointer"}} 
-                                    className="py-1 px-2 d-flex align-items-center justify-content-between"
+                                    className={`py-1 px-2 d-flex align-items-center justify-content-between ${styles.search_results}`}
                                 >
                                     {result.username}
-                                    { !result.primaryFriendID && !result.requestSent && !result.userId && !result.friendId && 
+                                    { !result.friendId && !result.requestSent && !result.foreignUserID && 
                                     <Button 
                                         className={`d-flex justify-content-center align-items-center`}
                                         onClick={ handleFriendRequest(result.username) }
@@ -117,7 +115,7 @@ export default function Searchbar(props : {token : string | undefined}) {
                                         <Image src={ userAdd }/>
                                     </Button>}
                                     {
-                                        result.requestSent == 1 && 
+                                        result.foreignUserID && result.primaryUserId !== result.foreignUserID && result.requestSent == 1 && 
                                         <Button 
                                             disabled={true}
                                             className={`d-flex justify-content-center align-items-center`}
@@ -126,12 +124,21 @@ export default function Searchbar(props : {token : string | undefined}) {
                                         </Button>
                                     }
                                     {
-                                        !result.primaryFriendID && !result.requestSent && result.userId && result.friendId &&
+                                        result.foreignUserID && result.primaryUserId == result.foreignUserID && result.requestSent == 1 &&
                                         <Button
                                             className={`d-flex justify-content-center align-items-center`}
                                             onClick={ handleAcceptRequest(result.primaryUserId) }
                                         >
                                             Accept request
+                                        </Button>
+                                    }
+                                    {
+                                        result.foreignUserID && result.primaryUserId && result.foreignUserID && result.requestSent == 0 &&
+                                        <Button
+                                            className={`d-hidden`}
+                                            disabled = { true }
+                                        >
+                                            View Profile
                                         </Button>
                                     }
                                 </div>

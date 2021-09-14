@@ -13,6 +13,7 @@ export default function managerooms() {
     const {accessToken} = AuthFunction();
 
     useEffect(function() {
+        if (accessToken == "") return;
         console.log("checking for the rooms", accessToken);
         fetch(`${Route.BASE_URL}/checkRooms`, {
             method : 'GET',
