@@ -7,9 +7,12 @@ import { Button } from 'react-bootstrap';
 
 export default function Searchbar(props : {token : string | undefined}) {
     interface IResult {
-        username : string;
-        friendId : number | null;
-        pendingRequest : null | 1 | 0;
+        value : number,
+        emailAddress : string,
+        label: string,
+        friendId : null | number,
+        requestSent : null | number,
+        foreignUserID : null | number
     }
 
     interface ISearchArr {
@@ -42,9 +45,13 @@ export default function Searchbar(props : {token : string | undefined}) {
         })
         .catch(err => {});
         return function(){
-            // controller.abort();
+            controller.abort();
         }
     }, [regExUsername, friendRequestStatus]);
+
+    useEffect(function(){
+        console.log(typeof searchResults);
+    }, [ searchResults ])
 
     function handleFriendRequest(username : string){
         return function(){
@@ -67,6 +74,22 @@ export default function Searchbar(props : {token : string | undefined}) {
             .catch(err => {console.log(err)});
         };
     }
+
+    function handleAcceptRequest(friendId : number){
+        return function(){
+            fetch(`${Route.BASE_URL}/acceptRequest`, {
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${props.token}`
+                },
+                body : JSON.stringify({friendId})
+            }).then(res => res.json()).
+            then(data => {
+                setFriendRequestStatus(prev => !prev);
+            }).catch(err => {console.log(err)});
+        };
+    }
     return (
         <div className={styles.searchbar }>
                 <input 
@@ -79,28 +102,47 @@ export default function Searchbar(props : {token : string | undefined}) {
                 />
                 <div style={{position: "absolute", background: "#fff"}}>
                     {
-                        searchResults.length !== 0 && searchResults.map((result :IResult, index: number) => {
+                        typeof searchResults == "object" && searchResults.length !== 0 && searchResults.map((result :IResult, index: number) => {
                             if (index >= 10) return ;
                             let checkedImage = "https://s2.svgbox.net/materialui.svg?ic=check&color=000";
                             return (
                                 <div
                                     style={{width: "30vw", borderBottom: "1px solid #000", cursor: "pointer"}} 
-                                    className="py-1 px-2 d-flex align-items-center justify-content-between"
+                                    className={`py-1 px-2 d-flex align-items-center justify-content-between ${styles.search_results}`}
                                 >
-                                    {result.username}
-                                    { result.pendingRequest == null &&  <Button 
+                                    {result.label}
+                                    { !result.friendId && !result.requestSent && !result.foreignUserID && 
+                                    <Button 
                                         className={`d-flex justify-content-center align-items-center`}
-                                        onClick={ handleFriendRequest(result.username) }
+                                        onClick={ handleFriendRequest(result.label) }
                                     >
                                         <Image src={ userAdd }/>
                                     </Button>}
                                     {
-                                        result.pendingRequest == 1 && 
+                                        result.foreignUserID && result.value !== result.foreignUserID && result.requestSent == 1 && 
                                         <Button 
                                             disabled={true}
                                             className={`d-flex justify-content-center align-items-center`}
                                         >
                                             <Image loader={() => checkedImage} src={ checkedImage } width="18" height="18" />
+                                        </Button>
+                                    }
+                                    {
+                                        result.foreignUserID && result.value == result.foreignUserID && result.requestSent == 1 &&
+                                        <Button
+                                            className={`d-flex justify-content-center align-items-center`}
+                                            onClick={ handleAcceptRequest(result.value) }
+                                        >
+                                            Accept request
+                                        </Button>
+                                    }
+                                    {
+                                        result.foreignUserID && result.value && result.foreignUserID && result.requestSent == 0 &&
+                                        <Button
+                                            className={`d-hidden`}
+                                            disabled = { true }
+                                        >
+                                            View Profile
                                         </Button>
                                     }
                                 </div>
