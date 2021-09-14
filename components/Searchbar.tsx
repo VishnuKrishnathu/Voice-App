@@ -7,9 +7,9 @@ import { Button } from 'react-bootstrap';
 
 export default function Searchbar(props : {token : string | undefined}) {
     interface IResult {
-        primaryUserId : number,
+        value : number,
         emailAddress : string,
-        username: string,
+        label: string,
         friendId : null | number,
         requestSent : null | number,
         foreignUserID : null | number
@@ -45,9 +45,13 @@ export default function Searchbar(props : {token : string | undefined}) {
         })
         .catch(err => {});
         return function(){
-            // controller.abort();
+            controller.abort();
         }
     }, [regExUsername, friendRequestStatus]);
+
+    useEffect(function(){
+        console.log(typeof searchResults);
+    }, [ searchResults ])
 
     function handleFriendRequest(username : string){
         return function(){
@@ -98,7 +102,7 @@ export default function Searchbar(props : {token : string | undefined}) {
                 />
                 <div style={{position: "absolute", background: "#fff"}}>
                     {
-                        searchResults.length !== 0 && searchResults.map((result :IResult, index: number) => {
+                        typeof searchResults == "object" && searchResults.length !== 0 && searchResults.map((result :IResult, index: number) => {
                             if (index >= 10) return ;
                             let checkedImage = "https://s2.svgbox.net/materialui.svg?ic=check&color=000";
                             return (
@@ -106,16 +110,16 @@ export default function Searchbar(props : {token : string | undefined}) {
                                     style={{width: "30vw", borderBottom: "1px solid #000", cursor: "pointer"}} 
                                     className={`py-1 px-2 d-flex align-items-center justify-content-between ${styles.search_results}`}
                                 >
-                                    {result.username}
+                                    {result.label}
                                     { !result.friendId && !result.requestSent && !result.foreignUserID && 
                                     <Button 
                                         className={`d-flex justify-content-center align-items-center`}
-                                        onClick={ handleFriendRequest(result.username) }
+                                        onClick={ handleFriendRequest(result.label) }
                                     >
                                         <Image src={ userAdd }/>
                                     </Button>}
                                     {
-                                        result.foreignUserID && result.primaryUserId !== result.foreignUserID && result.requestSent == 1 && 
+                                        result.foreignUserID && result.value !== result.foreignUserID && result.requestSent == 1 && 
                                         <Button 
                                             disabled={true}
                                             className={`d-flex justify-content-center align-items-center`}
@@ -124,16 +128,16 @@ export default function Searchbar(props : {token : string | undefined}) {
                                         </Button>
                                     }
                                     {
-                                        result.foreignUserID && result.primaryUserId == result.foreignUserID && result.requestSent == 1 &&
+                                        result.foreignUserID && result.value == result.foreignUserID && result.requestSent == 1 &&
                                         <Button
                                             className={`d-flex justify-content-center align-items-center`}
-                                            onClick={ handleAcceptRequest(result.primaryUserId) }
+                                            onClick={ handleAcceptRequest(result.value) }
                                         >
                                             Accept request
                                         </Button>
                                     }
                                     {
-                                        result.foreignUserID && result.primaryUserId && result.foreignUserID && result.requestSent == 0 &&
+                                        result.foreignUserID && result.value && result.foreignUserID && result.requestSent == 0 &&
                                         <Button
                                             className={`d-hidden`}
                                             disabled = { true }
