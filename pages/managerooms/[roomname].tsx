@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Route } from '../../Context/Env';
 import { AuthFunction } from '../../Context/AuthContext';
-import { Form, Card, CloseButton, Badge } from 'react-bootstrap';
+import { Form, Card, CloseButton, Badge, Button } from 'react-bootstrap';
 import AsyncSelect from "react-select/async";
+import { OptionTypeBase } from 'react-select';
 
 export default function EditRoomProps() {
     const history = useRouter();
     const { accessToken } = AuthFunction();
+    const { userData } = AuthFunction();
 
     const reactSelectStyles = {
         container : function(provided :any, state :any){
@@ -36,7 +38,6 @@ export default function EditRoomProps() {
     }
     interface ISearchResult {
         value : number,
-        emailAddress : string,
         label: string,
         friendId : null | number,
         requestSent : null | number,
@@ -56,6 +57,7 @@ export default function EditRoomProps() {
     });
     const [searchResults , setSearchResults] = useState<Array<ISearchResult>>([]);
     const [ memberUsername, setMemberUsername ] = useState<string>("");
+    const [ members, setMembers ] = useState<OptionTypeBase>([]);
 
     useEffect(function() {
         if(memberUsername == "") setSearchResults([]);
@@ -104,10 +106,52 @@ export default function EditRoomProps() {
         callback(searchResults);
     }
 
+    // handle saved changes
+    async function handleChanges(e :any){
+        e.preventDefault();
+        let roomName = e.target[0].value;
+        let roomId = history.query.roomname;
+        if(roomName == roomModel.roomName && members.length == 0){
+            return;
+        }
+        console.log(members);
+        console.log("submitted");
+        await fetch(`${Route.BASE_URL}/editRoom`, {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json',
+                'Authorization' : `Bearer ${accessToken}`
+            },
+            body : JSON.stringify({
+                members : members.length == 0 ? undefined : members,
+                roomName :roomName == roomModel.roomName ? undefined : roomName,
+                roomId
+            })
+        }).then(res => res.status == 200 ? location.reload() : console.log("error detected"))
+        .catch(err => {});
+    }
+
+    async function handleDeleteRoom(){
+        let roomId = history.query.roomname;
+        await fetch(`${Route.BASE_URL}/deleteRoom`, {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json',
+                'Authorization' : `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({roomId})
+        }).then(res => {
+            if(res.status == 200){
+                history.push('/managerooms');
+                return;
+            }
+        }).catch(err => console.log(err));
+    }
+
     return (
         <div>
         <div style={{ width : "30rem" }} className="m-4">
-            <Form>
+            <Form onSubmit={handleChanges}>
                 <Form.Group className={`d-flex align-items-center justify-content-between my-2`}>
                     <Form.Label className="m-0">Room Name</Form.Label>
                     <span>:</span>
@@ -131,7 +175,7 @@ export default function EditRoomProps() {
                     <Form.Label>Group Members :</Form.Label>
                     <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`}>
                         <Card.Body className="py-1 d-flex justify-content-between align-items-center">
-                            <span>VishnuKrishnathu</span>
+                            <span>{ userData?.username }</span>
                             <Badge bg="success">OWNER</Badge>
                         </Card.Body>
                     </Card>
@@ -157,8 +201,19 @@ export default function EditRoomProps() {
                         isClearable={true}
                         isMulti
                         onInputChange={setMemberUsername}
+                        onChange={(val) => setMembers(val)}
                     />
                 </Form.Group>
+                <Button 
+                    variant="success" 
+                    className={`ml-2 mt-2`}
+                    type= "submit"
+                >Save changes</Button>
+                <Button 
+                    variant="danger" 
+                    className={`mx-2 mt-2`}
+                    onClick={handleDeleteRoom}
+                >Delete room</Button>
             </Form>
         </div>
         </div>
