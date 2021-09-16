@@ -204,7 +204,7 @@ export default function EditRoomProps() {
                         roomModel.members && roomModel.members.rows.map(function(member, index :number){
                             if (member.label == roomModel.result.owner) return;
                             return (
-                                <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`}>
+                                <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`} key={member.value}>
                                     <Card.Body className="py-1 d-flex justify-content-between align-items-center" style={{flexFlow:"row wrap"}}>
                                         <span>{member.label}</span>
                                         <div className={`d-flex align-items-center justify-content-between`}>
