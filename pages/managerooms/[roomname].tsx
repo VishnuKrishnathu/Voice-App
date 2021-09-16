@@ -5,6 +5,7 @@ import { AuthFunction } from '../../Context/AuthContext';
 import { Form, Card, CloseButton, Badge, Button } from 'react-bootstrap';
 import AsyncSelect from "react-select/async";
 import { OptionTypeBase } from 'react-select';
+import Link from 'next/link';
 
 export default function EditRoomProps() {
     const history = useRouter();
@@ -29,19 +30,21 @@ export default function EditRoomProps() {
     interface IRoomModel {
         result : {
             roomDescription : string,
-            _id : string,
+            _id ?: string,
             roomName : string,
             owner : string,
-            roomMembers : Array<IRoomMembers>,
-            admin : Array<IRoomMembers>,
+            roomMembers ?: Array<IRoomMembers>,
+            admin ?: Array<IRoomMembers>,
             createdAt : string,
             updatedAt : string
         },
-        members : [{
-            isAdmin : 1 | 0,
-            label :string,
-            value :number
-        }]
+        members : {
+            rows : [{
+                isAdmin : 1 | 0,
+                label :string,
+                value :number
+            }] | []
+        }
     }
     interface ISearchResult {
         value : number,
@@ -63,11 +66,9 @@ export default function EditRoomProps() {
             createdAt : "",
             updatedAt : ""
         },
-        members : [{
-            isAdmin : 0,
-            label : "",
-            value : 0
-        }]
+        members : { rows :
+            []
+        }
     });
     const [searchResults , setSearchResults] = useState<Array<ISearchResult>>([]);
     const [ memberUsername, setMemberUsername ] = useState<string>("");
@@ -115,7 +116,6 @@ export default function EditRoomProps() {
             body : JSON.stringify({roomId : roomID})
         }).then(res => res.json())
         .then(function(data : IRoomModel){
-            console.log("room info", data);
             setRoomModel(data);
         }).catch(err => {
             history.push('/managerooms');
@@ -130,7 +130,7 @@ export default function EditRoomProps() {
     async function handleChanges(e :any){
         e.preventDefault();
         let roomName = e.target[0].value;
-        if(roomName == roomModel.result.roomName && members.length == 0){
+        if(roomName == roomModel.result.roomName && members.rows.length == 0){
             return;
         }
         console.log(members);
@@ -142,9 +142,9 @@ export default function EditRoomProps() {
                 'Authorization' : `Bearer ${accessToken}`
             },
             body : JSON.stringify({
-                members : members.length == 0 ? undefined : members,
+                members : members.rows.length == 0 ? undefined : members,
                 roomName :roomName == roomModel.result.roomName ? undefined : roomName,
-                roomId : roomID
+                roomId : roomID,
             })
         }).then(res => res.status == 200 ? location.reload() : console.log("error detected"))
         .catch(err => {});
@@ -157,7 +157,9 @@ export default function EditRoomProps() {
                 'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
             },
-            body: JSON.stringify({roomId : roomID})
+            body: JSON.stringify({
+                roomId : roomID
+            })
         }).then(res => {
             if(res.status == 200){
                 history.push('/managerooms');
@@ -199,14 +201,15 @@ export default function EditRoomProps() {
                         </Card.Body>
                     </Card>
                     {
-                        roomModel.members && roomModel.members.map(function(member, index :number){
+                        roomModel.members && roomModel.members.rows.map(function(member, index :number){
                             if (member.label == roomModel.result.owner) return;
                             return (
                                 <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`}>
                                     <Card.Body className="py-1 d-flex justify-content-between align-items-center" style={{flexFlow:"row wrap"}}>
                                         <span>{member.label}</span>
                                         <div className={`d-flex align-items-center justify-content-between`}>
-                                            <Badge bg="primary">ADMIN</Badge>
+                                            {member.isAdmin == 1 && <Badge bg="primary">ADMIN</Badge>}
+                                            {userData?.username == member.label && <Badge bg="primary">YOU</Badge>}
                                             <CloseButton />
                                         </div>
                                     </Card.Body>
@@ -216,7 +219,8 @@ export default function EditRoomProps() {
                     }
                 </Form.Group>
                 <Form.Group className={`d-flex align-items-center justify-content-between my-2`}>
-                    <Form.Label>Add Members :</Form.Label>
+                    <Form.Label className="m-0">Add Members </Form.Label>
+                    <span>:</span>
                     <AsyncSelect 
                         styles={reactSelectStyles}
                         loadOptions={ loadOptions }
@@ -237,6 +241,9 @@ export default function EditRoomProps() {
                     onClick={handleDeleteRoom}
                 >Delete room</Button>
             </Form>
+            <Link href="/managerooms">
+                <Button className="my-4">Back</Button>
+            </Link>
         </div>
         </div>
     )

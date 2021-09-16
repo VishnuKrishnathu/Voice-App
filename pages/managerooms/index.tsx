@@ -15,10 +15,14 @@ export default function managerooms() {
     useEffect(function() {
         console.log("checking for the rooms", accessToken);
         fetch(`${Route.BASE_URL}/checkRooms`, {
-            method : 'GET',
+            method : 'POST',
             headers : {
+                'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
-            }
+            },
+            body : JSON.stringify({
+                editAccess : true
+            })
         }).then( res => res.json())
         .then(data => {
             console.log(data)

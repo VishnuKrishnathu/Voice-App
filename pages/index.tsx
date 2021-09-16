@@ -16,10 +16,12 @@ export default function managerooms() {
         if (accessToken == "") return;
         console.log("checking for the rooms", accessToken);
         fetch(`${Route.BASE_URL}/checkRooms`, {
-            method : 'GET',
+            method : 'POST',
             headers : {
+                'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
-            }
+            },
+            body : JSON.stringify({editAccess : false})
         }).then( res => res.json())
         .then(data => {
             console.log(data)
