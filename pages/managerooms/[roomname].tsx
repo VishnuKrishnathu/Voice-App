@@ -133,7 +133,7 @@ export default function EditRoomProps() {
     async function handleChanges(e :any){
         e.preventDefault();
         let roomName = e.target[0].value;
-        if(roomName == roomModel.result.roomName && members.rows.length == 0){
+        if(roomName == roomModel.result.roomName && members.length == 0){
             return;
         }
         console.log(members);
@@ -145,7 +145,7 @@ export default function EditRoomProps() {
                 'Authorization' : `Bearer ${accessToken}`
             },
             body : JSON.stringify({
-                members : members.rows.length == 0 ? undefined : members,
+                members : members.length == 0 ? undefined : members,
                 roomName :roomName == roomModel.result.roomName ? undefined : roomName,
                 roomId : roomID,
             })

@@ -202,7 +202,7 @@ export default function VoiceRooms() {
             <Offcanvas.Body>
                 {roomModel.members?.rows.length !== 0 && roomModel.members?.rows.map(function(member, index){
                     return (
-                        <div className={`p-2 d-flex border border-dark rounded align-items-center justify-content-between`}>
+                        <div className={`p-2 d-flex border border-dark rounded align-items-center justify-content-between`} key={`${member.value}`}>
                             {member.label}
                             {member.isAdmin == 1 && <Badge bg="success" className="d-flex justify-content-center align-items-center mr-2">ADMIN</Badge>}
                         </div>

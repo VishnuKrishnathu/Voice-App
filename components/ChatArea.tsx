@@ -57,8 +57,10 @@ export default function ChatArea(props : {
                         if(message.message !== ""){
                         return(
                                 <div className={`${styles.messageBox}`} style={
-                                    message.sender == userData?.username ? {} : {background: "#d2d2d2"}
-                                }>
+                                        message.sender == userData?.username ? {} : {background: "#d2d2d2"}
+                                    }
+                                    key={`${Math.floor( Math.random()*Date.now()+Math.random())}`}
+                                >
                                 <span className={`${styles.meta}`}>
                                     <span className={`${styles.badges}`}>
                                     </span>
