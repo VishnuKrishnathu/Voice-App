@@ -1,7 +1,7 @@
 .chat_container{
     height: 100%;
     border-radius: 10px;
-    background: #190b44;
+    background: #7f6eb3;
     position: relative;
     overflow: hidden;
 }
@@ -113,7 +113,7 @@
     word-wrap: break-word;
 }
 
-.badge {
+.badges {
     display: inline-block;
     margin-right: 0.2em;
     position: relative;

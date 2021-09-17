@@ -113,7 +113,10 @@ export default function EditRoomProps() {
                 'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
             },
-            body : JSON.stringify({roomId : roomID})
+            body : JSON.stringify({
+                roomId : roomID,
+                checkAdmin : true
+            })
         }).then(res => res.json())
         .then(function(data : IRoomModel){
             setRoomModel(data);

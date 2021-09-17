@@ -40,7 +40,6 @@ export default function Searchbar(props : {token : string | undefined}) {
             signal : controller.signal
         }).then(res => res.json())
         .then((data : ISearchArr) => {
-            console.log(data);
             setSearchResults(data.result)
         })
         .catch(err => {});
@@ -48,10 +47,6 @@ export default function Searchbar(props : {token : string | undefined}) {
             controller.abort();
         }
     }, [regExUsername, friendRequestStatus]);
-
-    useEffect(function(){
-        console.log(typeof searchResults);
-    }, [ searchResults ])
 
     function handleFriendRequest(username : string){
         return function(){
