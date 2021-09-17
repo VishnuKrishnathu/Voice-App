@@ -113,7 +113,10 @@ export default function EditRoomProps() {
                 'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
             },
-            body : JSON.stringify({roomId : roomID})
+            body : JSON.stringify({
+                roomId : roomID,
+                checkAdmin : true
+            })
         }).then(res => res.json())
         .then(function(data : IRoomModel){
             setRoomModel(data);
@@ -130,7 +133,7 @@ export default function EditRoomProps() {
     async function handleChanges(e :any){
         e.preventDefault();
         let roomName = e.target[0].value;
-        if(roomName == roomModel.result.roomName && members.rows.length == 0){
+        if(roomName == roomModel.result.roomName && members.length == 0){
             return;
         }
         console.log(members);
@@ -142,7 +145,7 @@ export default function EditRoomProps() {
                 'Authorization' : `Bearer ${accessToken}`
             },
             body : JSON.stringify({
-                members : members.rows.length == 0 ? undefined : members,
+                members : members.length == 0 ? undefined : members,
                 roomName :roomName == roomModel.result.roomName ? undefined : roomName,
                 roomId : roomID,
             })
@@ -204,7 +207,7 @@ export default function EditRoomProps() {
                         roomModel.members && roomModel.members.rows.map(function(member, index :number){
                             if (member.label == roomModel.result.owner) return;
                             return (
-                                <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`}>
+                                <Card style={{width : "20rem", border: "1px solid #000"}} className={`d-flex`} key={member.value}>
                                     <Card.Body className="py-1 d-flex justify-content-between align-items-center" style={{flexFlow:"row wrap"}}>
                                         <span>{member.label}</span>
                                         <div className={`d-flex align-items-center justify-content-between`}>
