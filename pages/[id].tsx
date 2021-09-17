@@ -103,21 +103,24 @@ export default function VoiceRooms() {
         if(!socket || roomId == "") {
             return;
         }
-        try{
-            socket.emit('join-room', roomId);
-            console.log("socket function triggered");
-            socket.on('receive-message', function(message : IMessage) {
-                console.log("Message received", message);
-                setMessages((prev : Array<IMessage>) => {
-                    return [...prev, message];
-                });
-            })
-        }catch(err){
-            console.log("Error in receiving message", err);
-        }
+
+        socket.emit('join-room', roomId);
     }, [
-        roomId
-    ])
+        roomId, socket
+    ]);
+
+    useEffect(function(){
+        if(!socket){ return }
+
+        socket.on('receive-message', function(message : IMessage) {
+            console.log("Message received", message);
+            setMessages((prev : Array<IMessage>) => {
+                return [...prev, message];
+            });
+        })
+
+        return () => {socket.off('receive-message')}
+    }, [socket])
 
     useEffect(() => {
         try{
