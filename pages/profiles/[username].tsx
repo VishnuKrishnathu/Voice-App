@@ -15,39 +15,51 @@ export default function UserProfiles() {
     }
     //states
     const [rooms, setRooms] = useState<Array<IRoom>>([]);
+    const [queryUser, setQueryUser] = useState<number | undefined>();
+    const [ friends , setFriends] = useState<Array<{username : string}>>([]);
 
     const { userData, accessToken } = AuthFunction();
     const history = useRouter();
 
     useEffect(function(){
-        if(accessToken == "" || !accessToken){
+        let userId = typeof history.query.username == 'string' && history.query.username
+        setQueryUser(prev => {
+            if(!userId) return prev;
+            return parseInt(userId);
+        })
+    }, [history])
+
+    useEffect(function(){
+        if(accessToken == "" || !accessToken || !queryUser){
             return;
         }
         let controller = new window.AbortController();
-        let username = history.query.username;
         fetch(`${Route.BASE_URL}/getProfileInformation`, {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
                 'Authorization' : `Bearer ${accessToken}`
             },
-            body : JSON.stringify({username}),
+            body : JSON.stringify({
+                userId : queryUser
+            }),
             signal : controller.signal
         }).then(function(res){
             return (res.json())
         })
         .then(function(data : {
-            rooms : Array<IRoom>
+            rooms : Array<IRoom>;
+            friends : Array<{username :string}>;
         }){
-            console.log(data);
             setRooms(data.rooms);
+            setFriends(data.friends);
         })
         .catch(err => {});
 
         return function(){
             controller.abort();
         }
-    }, [accessToken, history])
+    }, [accessToken, queryUser])
     return (
         <>
         <Form className={`d-flex justify-content-evenly align-items-center flex-column m-2`} style={{width: "30rem"}}>
@@ -94,6 +106,29 @@ export default function UserProfiles() {
                                 </tr>
                             )
                         })
+                        }
+                    </tbody>
+                </Table>
+            </Form.Group>
+            <Form.Group className={`my-2`} style={{width: "100%"}}>
+                <Form.Label>Friends :</Form.Label>
+                <Table striped bordered hover variant="dark" responsive>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Friends list</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            friends.length !== 0 && friends.map((friendname, index) => (
+                                <tr>
+                                    <td>{index +1}</td>
+                                    <td>
+                                        <span>{friendname.username}</span>
+                                    </td>
+                                </tr>
+                            ))
                         }
                     </tbody>
                 </Table>

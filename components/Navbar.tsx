@@ -63,7 +63,7 @@ export default function NavBar(props: Props) {
                                 className="py-2 px-3"
                             >Logout</Button>
                             <NavDropdown title="More" id="basic-nav-dropdown">
-                                <NavDropdown.Item href={`/profiles/${userData?.username}`}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item href={`/profiles/${userData?.userId}`}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item href="/managerooms">Manage rooms</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
