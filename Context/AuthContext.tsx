@@ -6,6 +6,7 @@ interface IUserModel {
     emailId ?: string;
     password ?: string;
     username ?: string;
+    userId ?: number;
 }
 
 interface AuthInterface {
@@ -62,7 +63,6 @@ export default function AuthContext(props: Props){
             accessToken : string,
             error ?: string
         }) => {
-            console.log("accessToken received >>>",data)
             if(!data.verified) {
                 if(location.pathname === "/login") return;
                 history.push("/signup");
@@ -115,7 +115,7 @@ export default function AuthContext(props: Props){
             history.push("/login");
             return "empty";
         }))
-        .catch(err => console.log(err));
+        .catch(err => {});
     };
 
     // Login up function👇 
@@ -141,7 +141,7 @@ export default function AuthContext(props: Props){
             data.accessToken && setAccessToken(data.accessToken);
             return "";
         })
-        .catch(err => console.log(err));
+        .catch(err => {});
         return response;
     }
 
@@ -156,8 +156,11 @@ export default function AuthContext(props: Props){
                     'Authorization' : `Bearer ${accessToken}`
                 }
             }).then(res => res.json())
-            .then(data => setUserData(data))
-            .catch(err => console.log('Error in getting the users data', err));
+            .then(data => {
+                console.log("access token fetched");
+                setUserData(data);
+            })
+            .catch(err => {});
         }
     }, [accessToken]);
 

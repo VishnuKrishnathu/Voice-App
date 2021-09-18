@@ -48,7 +48,7 @@ export default function NavBar(props: Props) {
     return (
         <Navbardisplay.Provider value={updateNavState}>
             <div className="d-flex flex-column" style={{height: "100vh"}}>
-                <Navbar variant="light" sticky="top" style={{background : "var(--secondary-color)"}}>
+                { navbardisplay ? <Navbar variant="light" sticky="top" style={{background : "var(--secondary-color)"}}>
                     <Container>
                         <Navbar.Brand href="/">Chat Application</Navbar.Brand>
                         <Searchbar token={accessToken}/>
@@ -63,12 +63,12 @@ export default function NavBar(props: Props) {
                                 className="py-2 px-3"
                             >Logout</Button>
                             <NavDropdown title="More" id="basic-nav-dropdown">
-                                <NavDropdown.Item href={`/profiles/${userData?.username}`}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item href={`/profiles/${userData?.userId}`}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item href="/managerooms">Manage rooms</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     </Container>
-                </Navbar>
+                </Navbar> : <></> }
                 {props.children}
             </div>
         </Navbardisplay.Provider>
