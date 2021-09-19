@@ -1,4 +1,4 @@
-import React, {createContext, useState, useContext } from 'react';
+import React, {createContext, useState, useContext, useEffect } from 'react';
 import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
 import Link from 'next/link';
@@ -28,8 +28,9 @@ export const NavbarDisplay = ()=> {
 
 export default function NavBar(props: Props) {
     const [navbardisplay, setNavbarDisplay] = useState<boolean>(true);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    const { logOutFunction, accessToken, userData } = AuthFunction();
+    const { logOutFunction, userData } = AuthFunction();
 
     const updateNavState = {
         hideNavBar,
@@ -43,6 +44,12 @@ export default function NavBar(props: Props) {
     function displayNavBar() {
         setNavbarDisplay(true);
     }
+
+    useEffect(() => {
+        setAccessToken(function(prev){
+            return localStorage.getItem("token");
+        })
+    }, [])
 
 
     return (

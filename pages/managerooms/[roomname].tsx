@@ -9,7 +9,6 @@ import Link from 'next/link';
 
 export default function EditRoomProps() {
     const history = useRouter();
-    const { accessToken } = AuthFunction();
     const { userData } = AuthFunction();
 
     const reactSelectStyles = {
@@ -85,7 +84,7 @@ export default function EditRoomProps() {
             method : 'GET',
             headers : {
                 'Content-Type' : 'application/json',
-                'Authorization' : `Bearer ${accessToken}`
+                'Authorization' : `Bearer ${localStorage.getItem("token")}`
             },
             signal : controller.signal
         }).then(res => res.json())
@@ -101,10 +100,11 @@ export default function EditRoomProps() {
             controller.abort();
             setSearchResults([]);
         })
-    }, [memberUsername, accessToken, Route, roomID]);
+    }, [memberUsername, Route, roomID]);
 
 
     useEffect(function(){
+        let accessToken = localStorage.getItem("token");
         if(accessToken == "") return;
         if(!roomID) return;
         fetch(`${Route.BASE_URL}/getRoomInfo`, {
@@ -123,7 +123,7 @@ export default function EditRoomProps() {
         }).catch(err => {
             history.push('/managerooms');
         });
-    }, [roomID, accessToken, Route]);
+    }, [roomID, Route]);
 
     function loadOptions(inputValue : string, callback : Function){
         callback(searchResults);
@@ -142,7 +142,7 @@ export default function EditRoomProps() {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
-                'Authorization' : `Bearer ${accessToken}`
+                'Authorization' : `Bearer ${localStorage.getItem("token")}`
             },
             body : JSON.stringify({
                 members : members.length == 0 ? undefined : members,
@@ -158,7 +158,7 @@ export default function EditRoomProps() {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
-                'Authorization' : `Bearer ${accessToken}`
+                'Authorization' : `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 roomId : roomID

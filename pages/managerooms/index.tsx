@@ -10,9 +10,10 @@ export default function managerooms() {
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
     updateNavState.displayNavBar();
-    const {accessToken} = AuthFunction();
 
     useEffect(function() {
+        let accessToken = localStorage.getItem("token");
+        if(!accessToken) { return };
         console.log("checking for the rooms", accessToken);
         fetch(`${Route.BASE_URL}/checkRooms`, {
             method : 'POST',
@@ -29,11 +30,7 @@ export default function managerooms() {
             if(data.error !== undefined && data.error == false) setRooms(data.rooms);
         })
         .catch(err => console.log(err));
-    }, [accessToken, Route])
-
-    useEffect(() => {
-        console.log(rooms)
-    }, [rooms, accessToken])
+    }, [Route])
 
     return (
         <div style = {{width : "100%", height: "100%"}} className="d-flex mt-2">

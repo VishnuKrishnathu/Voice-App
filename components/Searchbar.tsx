@@ -5,7 +5,7 @@ import Image from 'next/image';
 import userAdd from '../public/useradd.svg';
 import { Button } from 'react-bootstrap';
 
-export default function Searchbar(props : {token : string | undefined}) {
+export default function Searchbar(props : {token : string | null}) {
     interface IResult {
         value : number,
         emailAddress : string,

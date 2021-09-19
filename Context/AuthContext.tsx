@@ -81,10 +81,10 @@ export default function AuthContext(props: Props){
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(res => setAccessToken(function(token : string){
-            history.push("/login");
-            return "empty";
-        }))
+        }).then(res => {
+            localStorage.removeItem("token");
+            history.push('/login');
+        })
         .catch(err => {});
     };
 
@@ -136,22 +136,23 @@ export default function AuthContext(props: Props){
             method : 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : `Bearer ${accessToken}`
+                'Authorization' : `Bearer ${localStorage.getItem("token")}`
             }
         }).then(res => res.json())
         .then(data => {
             console.log(data);
             console.log("access token fetched");
-            setUserData(data);
+            data.userId && setUserData(data);
         })
-        .catch(err => {});
-    }, [accessToken]);
+        .catch(err => {
+            history.push('/login');
+        });
+    }, []);
 
     const value = {
         signupController,
         signinController,
         logOutFunction,
-        accessToken,
         userData
     }
     return (
