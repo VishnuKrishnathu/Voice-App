@@ -18,7 +18,7 @@ export default function UserProfiles() {
     const [queryUser, setQueryUser] = useState<number | undefined>();
     const [ friends , setFriends] = useState<Array<{username : string}>>([]);
 
-    const { userData, accessToken } = AuthFunction();
+    const { userData } = AuthFunction();
     const history = useRouter();
 
     useEffect(function(){
@@ -30,6 +30,7 @@ export default function UserProfiles() {
     }, [history])
 
     useEffect(function(){
+        let accessToken = localStorage.getItem("token");
         if(accessToken == "" || !accessToken || !queryUser){
             return;
         }
@@ -59,7 +60,7 @@ export default function UserProfiles() {
         return function(){
             controller.abort();
         }
-    }, [accessToken, queryUser])
+    }, [ queryUser ])
     return (
         <>
         <Form className={`d-flex justify-content-evenly align-items-center flex-column m-2`} style={{width: "30rem"}}>

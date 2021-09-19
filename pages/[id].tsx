@@ -74,7 +74,7 @@ export default function VoiceRooms() {
     const [ offCanvasState, setOffCanvasState ] = useState<boolean>(false);
 
     const history = useRouter();
-    const { userData, accessToken } = AuthFunction();
+    const { userData } = AuthFunction();
 
     useEffect(function(){
         setRoomId(history.query.id);
@@ -152,7 +152,7 @@ export default function VoiceRooms() {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
-                'Authorization' : `Bearer ${accessToken}`
+                'Authorization' : `Bearer ${localStorage.getItem("token")}`
             },
             body : JSON.stringify({
                 roomId,
@@ -161,13 +161,14 @@ export default function VoiceRooms() {
             signal : controller.signal
         }).then(res => res.json())
         .then(function(data){
+            console.log("members of the group", data);
             setRoomModel(data);
         }).catch(err => {});
 
         return function(){
             controller.abort();
         }
-    }, [accessToken])
+    }, [])
     return (
         <>
         <div className={`mx-3 ${styles.chat_container} d-flex flex-column`} style={{flexGrow: 1}}>

@@ -16,7 +16,6 @@ export default function createRoom() {
     const updateNavState = NavbarDisplay();
     updateNavState.hideNavBar();
 
-    const {accessToken} = AuthFunction();
     function submitHandler(e : any){
         setAlertMessage("");
         e.preventDefault();
@@ -30,7 +29,7 @@ export default function createRoom() {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
-                'authorization' : `Bearer ${accessToken}`
+                'authorization' : `Bearer ${localStorage.getItem("token")}`
             },
             body : JSON.stringify(data)
         }).then( res => res.json())
