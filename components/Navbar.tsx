@@ -3,7 +3,7 @@ import Searchbar from './Searchbar';
 import styles from '../styles/Navbar.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button, Navbar, NavDropdown, Container, Nav, Badge } from "react-bootstrap";
+import { Button, Navbar, NavDropdown, Container, Nav, Spinner } from "react-bootstrap";
 import { AuthFunction } from "../Context/AuthContext";
 import profilePic from "../public/black-pp.webp";
 
@@ -56,7 +56,11 @@ export default function NavBar(props: Props) {
                             <span
                                 className={`d-flex align-items-center justify-content-center mx-2 ${styles.custom_badge}`}
                             >
-                                {userData?.username}
+                                {
+                                    userData?.username == "" || !userData?.username ?
+                                    <Spinner animation="border" /> :
+                                    userData?.username
+                                }
                             </span>
                             <Button 
                                 onClick={logOutFunction}

@@ -48,36 +48,6 @@ export default function AuthContext(props: Props){
 
     const history = useRouter();
 
-    // Refreshing and setting token👇
-    async function refreshAccessToken (){
-        console.log("refreshing the token .....");
-        let response = await fetch(`${Route.BASE_URL}/refresh`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        }).then(res => res.json())
-        .then((data: {
-            verified : boolean,
-            accessToken : string,
-            error ?: string
-        }) => {
-            if(!data.verified) {
-                if(location.pathname === "/login") return;
-                history.push("/signup");
-                setAccessToken("");
-                return;
-            };
-            setAccessToken(data.accessToken);
-            setAccessToken((prev : string) : string=> {
-                // history.push('/');
-                console.log("Access Token Received");
-                return data.accessToken;
-            })
-        });
-    }
-
     // Sign up function👇
     async function signupController (emailID: string, passwordConfirmed: string, username : string): Promise<string | void> {
         if (emailID === "" && passwordConfirmed === "") return "Please fillout the input fields";
@@ -96,7 +66,7 @@ export default function AuthContext(props: Props){
         .then((data : ISigninResponse)=> {
             if(! data.userCreated) return data.error;
             history.push('/');
-            setAccessToken(data.accessToken);
+            localStorage.setItem('token', data.accessToken);
             return "";
         })
         .catch(err => err.message);
@@ -118,6 +88,21 @@ export default function AuthContext(props: Props){
         .catch(err => {});
     };
 
+    useEffect(function() {
+        setAccessToken(prev => {
+            let token = localStorage.getItem("token");
+            if(typeof token == "string") return token;
+            return prev;
+        });
+
+        return () => {
+            setAccessToken("");
+        }
+    }, [
+        signinController,
+        signupController
+    ])
+
     // Login up function👇 
     async function signinController (username: string, passwordConfirmed: string):Promise<string | void> {
         if (username === "" || passwordConfirmed === "") return "";
@@ -138,7 +123,7 @@ export default function AuthContext(props: Props){
             accessToken ?: string
         }) => {
             if(!data.loggedIn) return data.error;
-            data.accessToken && setAccessToken(data.accessToken);
+            data.accessToken && localStorage.setItem("token", data.accessToken);
             return "";
         })
         .catch(err => {});
@@ -147,25 +132,22 @@ export default function AuthContext(props: Props){
 
     // fetching access token if not found in the memory👇
     useEffect(function () {
-        if(accessToken === "") refreshAccessToken();
-        else{
-            fetch(`${Route.BASE_URL}/getUser`, {
-                method : 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${accessToken}`
-                }
-            }).then(res => res.json())
-            .then(data => {
-                console.log("access token fetched");
-                setUserData(data);
-            })
-            .catch(err => {});
-        }
+        fetch(`${Route.BASE_URL}/getUser`, {
+            method : 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${accessToken}`
+            }
+        }).then(res => res.json())
+        .then(data => {
+            console.log(data);
+            console.log("access token fetched");
+            setUserData(data);
+        })
+        .catch(err => {});
     }, [accessToken]);
 
     const value = {
-        refreshAccessToken,
         signupController,
         signinController,
         logOutFunction,
