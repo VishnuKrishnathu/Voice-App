@@ -5,7 +5,7 @@ import { Route } from '../Context/Env';
 import styles from "../styles/Rooms.module.css";
 import Link from 'next/link';
 
-export default function managerooms() {
+export default function ManageRooms() {
     const [rooms, setRooms] = useState<Array<any>>([]);
     // Hide navbar and sidebar👇
     const updateNavState = NavbarDisplay();
@@ -28,7 +28,7 @@ export default function managerooms() {
             if(data.error !== undefined && data.error == false) setRooms(data.rooms);
         })
         .catch(err => console.log(err));
-    }, [Route])
+    }, [])
 
     return (
         <div style = {{width : "100%", height: "100%"}} className="d-flex mt-2">
@@ -38,9 +38,9 @@ export default function managerooms() {
                     <span>+</span>
                 </div>
             </Link>
-            {rooms.map(function(room){
+            {rooms.map(function(room, index){
                 return(
-                <Link href={`/${room._id}`}>
+                <Link href={`/${room._id}`} key={`keyName_${index}`}>
                     <div className={`${styles.room_card_data} mx-2 d-flex align-items-center justify-content-center`} >
                         <div>{room.roomName}</div>
                     </div>

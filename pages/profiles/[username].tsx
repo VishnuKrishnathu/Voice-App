@@ -123,7 +123,7 @@ export default function UserProfiles() {
                     <tbody>
                         {
                             friends.length !== 0 && friends.map((friendname, index) => (
-                                <tr>
+                                <tr key={`keyname_${index}`}>
                                     <td>{index +1}</td>
                                     <td>
                                         <span>{friendname.username}</span>

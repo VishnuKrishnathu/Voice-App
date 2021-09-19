@@ -60,20 +60,11 @@ export default function NavBar(props: Props) {
                         <Navbar.Brand href="/">Chat Application</Navbar.Brand>
                         <Searchbar token={accessToken}/>
                         <Nav>
-                            <span
-                                className={`d-flex align-items-center justify-content-center mx-2 ${styles.custom_badge}`}
-                            >
-                                {
-                                    userData?.username == "" || !userData?.username ?
-                                    <Spinner animation="border" /> :
-                                    userData?.username
-                                }
-                            </span>
                             <Button 
                                 onClick={logOutFunction}
                                 className="py-2 px-3"
                             >Logout</Button>
-                            <NavDropdown title="More" id="basic-nav-dropdown">
+                            <NavDropdown title={`${userData?.username}`} id="basic-nav-dropdown" className={`${styles.custom_badge} mx-1`}>
                                 <NavDropdown.Item href={`/profiles/${userData?.userId}`}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item href="/managerooms">Manage rooms</NavDropdown.Item>
                             </NavDropdown>

@@ -97,7 +97,7 @@ export default function VoiceRooms() {
         return function(){
             controller.abort()
         }
-    },[roomId, Route]);
+    },[roomId]);
 
     useEffect(() => {
         if(!socket || roomId == "") {
@@ -129,7 +129,7 @@ export default function VoiceRooms() {
         }catch(err){
             console.error("message not sent", err);
         }
-    }, [senderMessage, socket, roomId]);
+    }, [senderMessage, socket, roomId, userData]);
 
     function sendMessageHandler(e :any){
         e.preventDefault();
@@ -168,7 +168,7 @@ export default function VoiceRooms() {
         return function(){
             controller.abort();
         }
-    }, [])
+    }, [roomId])
     return (
         <>
         <div className={`mx-3 ${styles.chat_container} d-flex flex-column`} style={{flexGrow: 1}}>
@@ -192,6 +192,7 @@ export default function VoiceRooms() {
                 <Button className={`${styles.chat_send_button} p-0 d-flex align-items-center justify-content-center`} type="submit">
                     <Image 
                         src={Send}
+                        alt="send button"
                     />
                 </Button>
             </Form>

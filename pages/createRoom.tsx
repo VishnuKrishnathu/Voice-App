@@ -7,7 +7,7 @@ import { AuthFunction } from '../Context/AuthContext';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-export default function createRoom() {
+export default function CreateRoom() {
     const [chatType, setChatType] = useState<string>("Everyone");
     const [alertMessage, setAlertMessage] = useState<string>("");
 
@@ -98,9 +98,9 @@ export default function createRoom() {
                     width: "max-content"
                 }}>{alertMessage}</Alert>}
                 <br/>
-                <Link href="/managerooms">
-                    <Button className="my-2 mx-1">Back</Button>
-                </Link>
+                <Button className="my-2 mx-1" onClick={function(){
+                    history.push('/managerooms');
+                }}>Back</Button>
             </Form>
         </div>
     )

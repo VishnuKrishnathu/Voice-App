@@ -100,7 +100,7 @@ export default function EditRoomProps() {
             controller.abort();
             setSearchResults([]);
         })
-    }, [memberUsername, Route, roomID]);
+    }, [memberUsername, roomID]);
 
 
     useEffect(function(){
@@ -123,7 +123,7 @@ export default function EditRoomProps() {
         }).catch(err => {
             history.push('/managerooms');
         });
-    }, [roomID, Route]);
+    }, [roomID, history]);
 
     function loadOptions(inputValue : string, callback : Function){
         callback(searchResults);
@@ -244,9 +244,9 @@ export default function EditRoomProps() {
                     onClick={handleDeleteRoom}
                 >Delete room</Button>
             </Form>
-            <Link href="/managerooms">
-                <Button className="my-4">Back</Button>
-            </Link>
+            <Button className="my-4" onClick={function(){
+                history.push("/managerooms");
+            }}>Back</Button>
         </div>
         </div>
     )

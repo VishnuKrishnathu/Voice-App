@@ -72,7 +72,7 @@ export default function Login(props : {
                 <Button type="submit" className="mt-2" disabled= {loadingState}>LOGIN</Button>
             </Form>
             <div>
-                Don't have an account?
+                Don{`'`}t have an account?
                 <Link href="/signup"><a className="mx-1" style={{
                     display: "inline"
                 }}>Signup</a></Link>

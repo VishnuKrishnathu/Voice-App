@@ -66,6 +66,7 @@ export default function AuthContext(props: Props){
         .then((data : ISigninResponse)=> {
             if(! data.userCreated) return data.error;
             history.push('/');
+            setAccessToken(data.accessToken);
             localStorage.setItem('token', data.accessToken);
             return "";
         })
@@ -82,26 +83,12 @@ export default function AuthContext(props: Props){
                 'Content-Type': 'application/json'
             }
         }).then(res => {
+            setAccessToken("");
             localStorage.removeItem("token");
             history.push('/login');
         })
         .catch(err => {});
     };
-
-    useEffect(function() {
-        setAccessToken(prev => {
-            let token = localStorage.getItem("token");
-            if(typeof token == "string") return token;
-            return prev;
-        });
-
-        return () => {
-            setAccessToken("");
-        }
-    }, [
-        signinController,
-        signupController
-    ])
 
     // Login up function👇 
     async function signinController (username: string, passwordConfirmed: string):Promise<string | void> {
@@ -123,7 +110,7 @@ export default function AuthContext(props: Props){
             accessToken ?: string
         }) => {
             if(!data.loggedIn) return data.error;
-            data.accessToken && localStorage.setItem("token", data.accessToken);
+            data.accessToken && localStorage.setItem("token", data.accessToken) && setAccessToken(data.accessToken);
             return "";
         })
         .catch(err => {});
@@ -142,12 +129,16 @@ export default function AuthContext(props: Props){
         .then(data => {
             console.log(data);
             console.log("access token fetched");
-            data.userId && setUserData(data);
+            if(data.verfied == false){
+                history.push('/login')
+            }else{
+                data.userId && setUserData(data);
+            }
         })
         .catch(err => {
             history.push('/login');
         });
-    }, []);
+    }, [accessToken]);
 
     const value = {
         signupController,

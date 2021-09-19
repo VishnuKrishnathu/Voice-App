@@ -110,9 +110,11 @@ export default function Signup() {
                             usernameError ? 
                             <Image 
                                 src={ErrorUsername}
+                                alt="username unavailable"
                             /> : 
                             <Image 
                                 src = {SuccessUsername}
+                                alt="username available"
                             />
                         }
                         </InputGroup.Text>

@@ -46,7 +46,7 @@ export default function Searchbar(props : {token : string | null}) {
         return function(){
             controller.abort();
         }
-    }, [regExUsername, friendRequestStatus]);
+    }, [regExUsername, friendRequestStatus, props.token]);
 
     function handleFriendRequest(username : string){
         return function(){
@@ -101,7 +101,7 @@ export default function Searchbar(props : {token : string | null}) {
                             if (index >= 10) return ;
                             let checkedImage = "https://s2.svgbox.net/materialui.svg?ic=check&color=000";
                             return (
-                                <div
+                                <div key={`keyNumber_${index}`}
                                     style={{width: "30vw", borderBottom: "1px solid #000", cursor: "pointer"}} 
                                     className={`py-1 px-2 d-flex align-items-center justify-content-between ${styles.search_results}`}
                                 >
@@ -111,7 +111,7 @@ export default function Searchbar(props : {token : string | null}) {
                                         className={`d-flex justify-content-center align-items-center`}
                                         onClick={ handleFriendRequest(result.label) }
                                     >
-                                        <Image src={ userAdd }/>
+                                        <Image src={ userAdd } alt="add user"/>
                                     </Button>}
                                     {
                                         result.foreignUserID && result.value !== result.foreignUserID && result.requestSent == 1 && 
@@ -119,7 +119,14 @@ export default function Searchbar(props : {token : string | null}) {
                                             disabled={true}
                                             className={`d-flex justify-content-center align-items-center`}
                                         >
-                                            <Image loader={() => checkedImage} src={ checkedImage } width="18" height="18" />
+                                            <Image 
+                                                loader={() => checkedImage} 
+                                                src={ checkedImage } 
+                                                width="18" 
+                                                height="18" 
+                                                alt="checked image" 
+                                            />
+
                                         </Button>
                                     }
                                     {
